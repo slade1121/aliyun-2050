@@ -6,4 +6,11 @@
   <type class="com.phoenixcontact.AliyunIotMqtt.BAliyunDevices" name="AliyunDevices"/>
   <type class="com.phoenixcontact.AliyunIotMqtt.BTest" name="Test"/>
   <type class="com.phoenixcontact.AliyunIotMqtt.BSignMethodEnum" name="SignMethodEnum"/>
+  <type class="com.phoenixcontact.AliyunIotMqtt.BAliIotDriver" name="AliIotDriver"/>
+  <!--com.phoenixcontact.AliyunIotMqtt.proxy-->
+  <type class="com.phoenixcontact.AliyunIotMqtt.proxy.BIotNumericWriteableProxy" name="IotNumericWriteableProxy"/>
+  <type class="com.phoenixcontact.AliyunIotMqtt.proxy.BIotProxyBase" name="IotProxyBase"/>
+  <type class="com.phoenixcontact.AliyunIotMqtt.proxy.BIotBooleanPointProxy" name="IotBooleanPointProxy"/>
+  <type class="com.phoenixcontact.AliyunIotMqtt.proxy.BIotBooleanWriteableProxy" name="IotBooleanWriteableProxy"/>
+  <type class="com.phoenixcontact.AliyunIotMqtt.proxy.BIotNumericPointProxy" name="IotNumericPointProxy"/>
 </types>

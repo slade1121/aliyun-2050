@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module name="AliyunIotMqtt-rt" bajaVersion="0" vendor="PhoenixContact" vendorVersion="1.0" description="AliyunIotMqtt" preferredSymbol="P" nre="true" autoload="true" installable="true" buildMillis="1649133948108" buildHost="DESKTOP-IR1K51J" moduleName="AliyunIotMqtt" runtimeProfile="rt">
+<module name="AliyunIotMqtt-rt" bajaVersion="0" vendor="PhoenixContact" vendorVersion="1.0" description="AliyunIotMqtt" preferredSymbol="P" nre="true" autoload="true" installable="true" buildMillis="1649238515718" buildHost="DESKTOP-IR1K51J" moduleName="AliyunIotMqtt" runtimeProfile="rt">
  <dependencies>
+  <dependency name="control-rt" vendor="Tridium" vendorVersion="4.10"/>
   <dependency name="baja" vendor="Tridium" vendorVersion="4.10"/>
   <dependency name="emalyticsHVAC-rt" vendor="Phoenix Contact" vendorVersion="1.5"/>
+  <dependency name="driver-rt" vendor="Tridium" vendorVersion="4.10"/>
  </dependencies>
  <dirs/>
  <types>
   <type class="com.phoenixcontact.AliyunIotMqtt.BAliyunDevices" name="AliyunDevices"/>
   <type class="com.phoenixcontact.AliyunIotMqtt.BTest" name="Test"/>
   <type class="com.phoenixcontact.AliyunIotMqtt.BSignMethodEnum" name="SignMethodEnum"/>
+  <type class="com.phoenixcontact.AliyunIotMqtt.BAliIotDriver" name="AliIotDriver"/>
+  <type class="com.phoenixcontact.AliyunIotMqtt.proxy.BIotNumericWriteableProxy" name="IotNumericWriteableProxy"/>
+  <type class="com.phoenixcontact.AliyunIotMqtt.proxy.BIotProxyBase" name="IotProxyBase"/>
+  <type class="com.phoenixcontact.AliyunIotMqtt.proxy.BIotBooleanPointProxy" name="IotBooleanPointProxy"/>
+  <type class="com.phoenixcontact.AliyunIotMqtt.proxy.BIotBooleanWriteableProxy" name="IotBooleanWriteableProxy"/>
+  <type class="com.phoenixcontact.AliyunIotMqtt.proxy.BIotNumericPointProxy" name="IotNumericPointProxy"/>
  </types>
  <permissions>
   <niagara-permission-groups type="all"/>

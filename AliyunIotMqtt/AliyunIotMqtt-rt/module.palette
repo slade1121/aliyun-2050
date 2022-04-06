@@ -5,7 +5,7 @@
 
 
         <p n="AliyunDevices" m="s=AliyunIotMqtt" t="s:AliyunDevices"/>
-        <p n="Test" m="s=AliyunIotMqtt" t="s:Test"/>
+        <p n="AliIotDriver" m="s=AliyunIotMqtt" t="s:AliIotDriver"/>
 
 
     </p>

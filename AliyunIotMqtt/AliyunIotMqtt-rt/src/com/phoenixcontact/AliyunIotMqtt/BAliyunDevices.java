@@ -62,8 +62,8 @@ public class BAliyunDevices extends BComponent {
 
     
 /*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
-/*@ $com.phoenixcontact.AliyunIotMqtt.BAliyunDevices(1524958793)1.0$ @*/
-/* Generated Tue Apr 05 11:52:08 CST 2022 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+/*@ $com.phoenixcontact.AliyunIotMqtt.BAliyunDevices(610212624)1.0$ @*/
+/* Generated Wed Apr 06 16:34:44 CST 2022 by Slot-o-Matic (c) Tridium, Inc. 2012 */
 
 ////////////////////////////////////////////////////////////////
 // Property "productKey"

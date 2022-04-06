@@ -17,6 +17,8 @@ niagaraModule {
 dependencies {
   compile "Tridium:nre:4.10"
   compile "Tridium:baja:4.10"
+  compile "Tridium:control-rt:4.10"
+  compile "Tridium:driver-rt:4.10"
   //  compile "Tridium:abstractMqttDriver-rt:4.10"
   compile "org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0"
 //  compile "org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0"

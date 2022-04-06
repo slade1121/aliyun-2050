@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module name="AliyunIotMqtt-wb" bajaVersion="0" vendor="PhoenixContact" vendorVersion="1.0" description="AliyunIotMqtt" preferredSymbol="P" nre="true" autoload="true" installable="true" buildMillis="1649133949905" buildHost="DESKTOP-IR1K51J" moduleName="AliyunIotMqtt" runtimeProfile="wb">
+<module name="AliyunIotMqtt-wb" bajaVersion="0" vendor="PhoenixContact" vendorVersion="1.0" description="AliyunIotMqtt" preferredSymbol="P" nre="true" autoload="true" installable="true" buildMillis="1649237288654" buildHost="DESKTOP-IR1K51J" moduleName="AliyunIotMqtt" runtimeProfile="wb">
  <dependencies>
+  <dependency name="control-rt" vendor="Tridium" vendorVersion="4.10"/>
   <dependency name="AliyunIotMqtt-rt" vendor="PhoenixContact" vendorVersion="1.0"/>
   <dependency name="baja" vendor="Tridium" vendorVersion="4.10"/>
   <dependency name="emalyticsHVAC-rt" vendor="Phoenix Contact" vendorVersion="1.5"/>

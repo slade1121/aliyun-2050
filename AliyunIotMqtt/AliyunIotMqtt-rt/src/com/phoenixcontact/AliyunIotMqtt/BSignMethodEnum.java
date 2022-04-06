@@ -37,47 +37,53 @@ import javax.baja.sys.Type;
 @NiagaraType
 public final class BSignMethodEnum extends BFrozenEnum {
     //region Slotomatic   
-    /*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
+    
+/*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
+/*@ $com.phoenixcontact.AliyunIotMqtt.BSignMethodEnum(1568642616)1.0$ @*/
+/* Generated Wed Apr 06 16:34:44 CST 2022 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+  
+  /** Ordinal value for hmacsha256. */
+  public static final int HMACSHA_256 = 0;
+  /** Ordinal value for hmacsha1. */
+  public static final int HMACSHA_1 = 1;
+  /** Ordinal value for hmacmd5. */
+  public static final int HMACMD_5 = 2;
+  
+  /** BSignMethodEnum constant for hmacsha256. */
+  public static final BSignMethodEnum hmacsha256 = new BSignMethodEnum(HMACSHA_256);
+  /** BSignMethodEnum constant for hmacsha1. */
+  public static final BSignMethodEnum hmacsha1 = new BSignMethodEnum(HMACSHA_1);
+  /** BSignMethodEnum constant for hmacmd5. */
+  public static final BSignMethodEnum hmacmd5 = new BSignMethodEnum(HMACMD_5);
+  
+  /** Factory method with ordinal. */
+  public static BSignMethodEnum make(int ordinal)
+  {
+    return (BSignMethodEnum)hmacsha256.getRange().get(ordinal, false);
+  }
+  
+  /** Factory method with tag. */
+  public static BSignMethodEnum make(String tag)
+  {
+    return (BSignMethodEnum)hmacsha256.getRange().get(tag);
+  }
+  
+  /** Private constructor. */
+  private BSignMethodEnum(int ordinal)
+  {
+    super(ordinal);
+  }
+  
+  public static final BSignMethodEnum DEFAULT = hmacsha256;
 
-    /** Ordinal value for hmacsha256. */
-    public static final int Enum_hmacsha256 = 0;
-    /** Ordinal value for hmacsha1. */
-    public static final int Enum_hmacsha1 = 1;
-    /** Ordinal value for hmacmd5. */
-    public static final int Enum_hmacmd5 = 2;
+////////////////////////////////////////////////////////////////
+// Type
+////////////////////////////////////////////////////////////////
+  
+  @Override
+  public Type getType() { return TYPE; }
+  public static final Type TYPE = Sys.loadType(BSignMethodEnum.class);
 
-    /** BSignMethodEnum constant for hmacsha256. */
-    public static final BSignMethodEnum hmacsha256 = new BSignMethodEnum(Enum_hmacsha256);
-    /** BSignMethodEnum constant for hmacsha1. */
-    public static final BSignMethodEnum hmacsha1 = new BSignMethodEnum(Enum_hmacsha1);
-    /** BSignMethodEnum constant for hmacmd5. */
-    public static final BSignMethodEnum hmacmd5 = new BSignMethodEnum(Enum_hmacmd5);
-
-    /** Private constructor. */
-    private BSignMethodEnum(int ordinal)
-    {
-        super(ordinal);
-    }
-
-
-    /** Factory method with ordinal. */
-    public static BSignMethodEnum make(int ordinal)
-    {
-        return (BSignMethodEnum)hmacmd5.getRange().get(ordinal, false);
-    }
-
-    /** Factory method with tag. */
-    public static BSignMethodEnum make(String tag)
-    {
-        return (BSignMethodEnum)hmacmd5.getRange().get(tag);
-    }
-
-    public static final BSignMethodEnum DEFAULT = hmacsha256;
-
-    @Override
-    public Type getType() { return TYPE; }
-    public static final Type TYPE = Sys.loadType(BSignMethodEnum.class);
-
-    /*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
+/*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
     //endregion Slotomatic
 }
