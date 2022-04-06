@@ -1,0 +1,101 @@
+<!--<permissions>-->
+<!--  <niagara-permission-groups type="all">-->
+<!--    &lt;!&ndash; Insert any global permissions here. &ndash;&gt;-->
+<!--  </niagara-permission-groups>-->
+<!--  <niagara-permission-groups type="workbench">-->
+<!--    &lt;!&ndash; Insert any workbench specific permissions here. &ndash;&gt;-->
+<!--  </niagara-permission-groups>-->
+<!--  <niagara-permission-groups type="station">-->
+<!--    &lt;!&ndash;<req-permission>&ndash;&gt;-->
+<!--    &lt;!&ndash;<name>NETWORK_COMMUNICATION</name>&ndash;&gt;-->
+<!--    &lt;!&ndash;<purposeKey>Outside access for Driver</purposeKey>&ndash;&gt;-->
+<!--    &lt;!&ndash;<parameters>&ndash;&gt;-->
+<!--      &lt;!&ndash;<parameter name="hosts" value="127.0.0.1"/>&ndash;&gt;-->
+<!--      &lt;!&ndash;<parameter name="ports" value="*"/>&ndash;&gt;-->
+<!--      &lt;!&ndash;<parameter name="type" value="all"/>&ndash;&gt;-->
+<!--    &lt;!&ndash;</parameters>&ndash;&gt;-->
+<!--    &lt;!&ndash;</req-permission>&ndash;&gt;-->
+<!--  </niagara-permission-groups>-->
+<!--</permissions>-->
+
+
+<permissions>
+  <niagara-permission-groups type="all">
+    <!-- Insert any global permissions here. -->
+  </niagara-permission-groups>
+  <niagara-permission-groups type="workbench">
+    <req-permission>
+      <name>REFLECTION</name>
+      <purposeKey>REFLECTION_</purposeKey>
+    </req-permission>
+    <!-- Insert any workbench specific permissions here. -->
+  </niagara-permission-groups>
+  <niagara-permission-groups type="station">
+    <req-permission>
+      <name>NETWORK_COMMUNICATION</name>
+      <purposeKey>Outside access for SQLServer and other cabinets </purposeKey>
+      <parameters>
+        <parameter name="hosts" value="*"/>
+        <parameter name="ports" value="*"/>
+        <parameter name="type" value="all"/>
+      </parameters>
+    </req-permission>
+
+    <req-permission>
+      <name>REFLECTION</name>
+      <purposeKey>REFLECTION_</purposeKey>
+    </req-permission>
+
+    <req-permission>
+      <name>LOGGING</name>
+      <purposeKey>LOGGING..</purposeKey>
+    </req-permission>
+
+
+    <req-permission>
+      <name>GET_ENVIRONMENT_VARIABLES</name>
+      <purposeKey>GET_ENVIRONMENT_VARIABLES..</purposeKey>
+      <parameters>
+
+        <parameter name="variables" value="JAVA_SDK_EXTENDED_EVALUATION,JAVA_SDK_EXTENDED_EVALUATION_3D"/>
+
+      </parameters>
+
+    </req-permission>
+
+
+    <req-permission>
+      <name>SYSTEM_PROPERTIES</name>
+      <purposeKey>SYSTEM_PROPERTIES..</purposeKey>
+      <parameters>
+        <parameter name="properties" value="*"/>
+        <parameter name="actions" value="read,write"/>
+      </parameters>
+
+    </req-permission>
+
+    <req-permission>
+      <name>MANAGE_EXECUTION</name>
+      <purposeKey>MANAGE_EXECUTION..</purposeKey>
+    </req-permission>
+
+
+
+
+
+
+  </niagara-permission-groups>
+
+
+
+  <!--  <java-permissions type="station">-->
+  <!--&lt;!&ndash;    <java-permission action="read, write" class="java.util.PropertyPermission" name="*"/>&ndash;&gt;-->
+  <!--&lt;!&ndash;    <java-permission class="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>&ndash;&gt;-->
+  <!--&lt;!&ndash;    <java-permission class="java.net.NetPermission" name="getNetworkInformation"/>&ndash;&gt;-->
+  <!--&lt;!&ndash;    <java-permission action="accept,connect,listen,resolve" class="com.tridium.nre.security.NiagaraSocketPermission" name="*:1-100000"/>&ndash;&gt;-->
+  <!--&lt;!&ndash;    <java-permission class="java.lang.RuntimePermission" name="modifyThread"/>&ndash;&gt;-->
+  <!--  </java-permissions>-->
+
+
+
+</permissions>

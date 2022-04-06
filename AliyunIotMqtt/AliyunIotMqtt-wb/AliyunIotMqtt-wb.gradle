@@ -1,0 +1,25 @@
+/* Module Build File */
+
+description     = "AliyunIotMqtt"
+ext {
+}
+niagaraModule {
+  moduleName = "AliyunIotMqtt"
+  preferredSymbol = "P"
+  runtimeProfile = "wb"
+  certAlias = "phoenixCN"
+}
+
+dependencies {
+  compile "Tridium:nre:4.10"
+  compile "Tridium:baja:4.10"
+  compile "Tridium:bajaui-wb:4.10"
+  compile "Tridium:workbench-wb:4.10"
+
+  compile project(":AliyunIotMqtt-rt")
+}
+
+moduleTestJar {
+  from('srcTest') {
+  }
+}

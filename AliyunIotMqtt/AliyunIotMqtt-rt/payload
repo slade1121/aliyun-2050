@@ -1,0 +1,8 @@
+{
+    id: 123452452,
+    params: {
+        CurrentTemperature: 26,
+        TargetTemperature:8
+    },
+    method: "thing.event.property.post"
+}

@@ -1,0 +1,33 @@
+/* Module Build File */
+
+description     = "AliyunIotMqtt"
+ext {
+}
+niagaraModule {
+  moduleName = "AliyunIotMqtt"
+  preferredSymbol = "P"
+  runtimeProfile = "rt"
+  certAlias = "phoenixCN"
+  modulePart {
+      name = "AliyunIotMqtt-wb"
+      runtimeProfile = "wb"
+  }
+}
+
+dependencies {
+  compile "Tridium:nre:4.10"
+  compile "Tridium:baja:4.10"
+  //  compile "Tridium:abstractMqttDriver-rt:4.10"
+  compile "org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0"
+//  compile "org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0"
+  compile "phoenixcontact:emalyticsHVAC-rt:1.6"
+
+  uberjar files("lib/guava-27.0.1-jre.jar")
+
+
+}
+
+moduleTestJar {
+  from('srcTest') {
+  }
+}
