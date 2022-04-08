@@ -22,6 +22,7 @@ import javax.baja.nre.annotations.NiagaraType;
 import javax.baja.sys.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 /**
@@ -97,10 +98,9 @@ public class BAliIotDriver extends BComponent {
 
     /*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
 
-    List<BControlPoint> allPoints = new ArrayList<>();
+    ConcurrentHashMap<String, BIotProxyBase> ProxyMap = new ConcurrentHashMap<>();
 
     public void doCreateModel(BString msg) {
-        allPoints.clear();
         this.removeAll();
         List<IotProperty> props = new ArrayList<>();
         JSONObject obj = new JSONObject(msg.toString());
@@ -112,28 +112,38 @@ public class BAliIotDriver extends BComponent {
         for (IotProperty prop : props) {
             BControlPoint p = BIotProxyBase.CREATE(prop);
             if (p != null) {
-                allPoints.add(p);
                 this.add(prop.getName(), p);
             }
         }
+        buildPointsRef();
     }
 
     public void doTestSend() {
-        for (BControlPoint p : this.allPoints) {
-            BIotProxyBase[] proxys = p.getChildren(BIotProxyBase.class);
-            if (proxys.length > 0) {
-                System.out.println(proxys[0].getValue());
+        ProxyMap.values().forEach(p -> {
+            System.out.println(p.getValue());
+        });
+    }
+
+    private void buildPointsRef() {
+        ProxyMap.clear();
+        BControlPoint[] cps = this.getChildren(BControlPoint.class);
+        for (BControlPoint cp : cps) {
+            BIotProxyBase[] ps = cp.getChildren(BIotProxyBase.class);
+            if (ps.length != 0) {
+                BIotProxyBase p = ps[0];
+                ProxyMap.put(p.getIdentifier(), p);
             }
         }
     }
 
-    public void onPointNotify(BIotProxyBase point){
+    public void onPointNotify(BIotProxyBase point) {
         System.out.println(point.getValue());
     }
 
     @Override
     public void started() throws Exception {
         super.started();
+        buildPointsRef();
     }
 
     @Override

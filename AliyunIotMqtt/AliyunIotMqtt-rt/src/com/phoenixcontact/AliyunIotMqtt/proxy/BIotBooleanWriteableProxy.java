@@ -10,13 +10,10 @@
 
 package com.phoenixcontact.AliyunIotMqtt.proxy;
 
-import javax.baja.control.BBooleanWritable;
+import javax.baja.nre.annotations.NiagaraProperty;
 import javax.baja.nre.annotations.NiagaraType;
 import javax.baja.status.BStatusBoolean;
-import javax.baja.sys.Context;
-import javax.baja.sys.Property;
-import javax.baja.sys.Sys;
-import javax.baja.sys.Type;
+import javax.baja.sys.*;
 import java.util.logging.Logger;
 
 /**
@@ -28,25 +25,62 @@ import java.util.logging.Logger;
  */
 
 @NiagaraType
+@NiagaraProperty(name = "shadow", type = "BStatusBoolean", defaultValue = "new BStatusBoolean()", flags = Flags.HIDDEN)
 public class BIotBooleanWriteableProxy extends BIotProxyBase {
 
-/*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
-/*@ $com.phoenixcontact.AliyunIotMqtt.proxy.BIotNumericWriteableProxy(2979906276)1.0$ @*/
-/* Generated Wed Apr 06 17:21:37 CST 2022 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+
+
+    /*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
+    /*@ $com.phoenixcontact.AliyunIotMqtt.proxy.BIotBooleanWriteableProxy(2335051474)1.0$ @*/
+    /* Generated Wed Apr 06 20:04:13 CST 2022 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+
+////////////////////////////////////////////////////////////////
+// Property "shadow"
+////////////////////////////////////////////////////////////////
+
+    /**
+     * Slot for the {@code shadow} property.
+     *
+     * @see #getShadow
+     * @see #setShadow
+     */
+    public static final Property shadow = newProperty(Flags.HIDDEN, new BStatusBoolean(), null);
+
+    /**
+     * Get the {@code shadow} property.
+     *
+     * @see #shadow
+     */
+    public BStatusBoolean getShadow() {
+        return (BStatusBoolean) get(shadow);
+    }
+
+    /**
+     * Set the {@code shadow} property.
+     *
+     * @see #shadow
+     */
+    public void setShadow(BStatusBoolean v) {
+        set(shadow, v, null);
+    }
 
 ////////////////////////////////////////////////////////////////
 // Type
 ////////////////////////////////////////////////////////////////
 
-  @Override
-  public Type getType() { return TYPE; }
-  public static final Type TYPE = Sys.loadType(BIotBooleanWriteableProxy.class);
+    @Override
+    public Type getType() {
+        return TYPE;
+    }
 
-/*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
+    public static final Type TYPE = Sys.loadType(BIotBooleanWriteableProxy.class);
+
+    /*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
 
     @Override
     public void started() throws Exception {
         super.started();
+        this.linkTo((BComponent) this.getParent(), this.getParent().getSlot("out"), shadow);
     }
 
     @Override
@@ -55,7 +89,9 @@ public class BIotBooleanWriteableProxy extends BIotProxyBase {
             return;
         }
         super.changed(property, context);
-
+        if (property == shadow && this.getNotifyWhenChanged()) {
+            doIotNotify();
+        }
     }
 
     @Override
