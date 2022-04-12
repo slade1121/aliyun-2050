@@ -173,7 +173,7 @@ public abstract class BIotProxyBase extends BComponent {
     }
 
     public static BControlPoint CREATE(IotProperty config) {
-        if (config.getDataType().equals("int")) {
+        if (config.getDataType().equals("int")||config.getDataType().equals("double")) {
             BNumericWritable point = new BNumericWritable();
             BIotNumericWriteableProxy proxy = new BIotNumericWriteableProxy();
             proxy.applyParameters(config);

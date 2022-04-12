@@ -3,7 +3,7 @@
 <types>
   <!-- Type Example:<type name="MyClass" class="com.acme.BMyClass"/> -->
   <!--com.phoenixcontact.AliyunIotMqtt-->
-  <type class="com.phoenixcontact.AliyunIotMqtt.BAliyunDevices" name="AliyunDevices"/>
+  <type class="com.phoenixcontact.AliyunIotMqtt.Devices.BAliyunDevices" name="AliyunDevices"/>
   <type class="com.phoenixcontact.AliyunIotMqtt.BTest" name="Test"/>
   <type class="com.phoenixcontact.AliyunIotMqtt.BSignMethodEnum" name="SignMethodEnum"/>
   <type class="com.phoenixcontact.AliyunIotMqtt.BAliIotDriver" name="AliIotDriver"/>
