@@ -90,6 +90,7 @@ public class BIotNumericWriteableProxy extends BIotProxyBase {
         super.changed(property, context);
         if (property == shadow && this.getNotifyWhenChanged()) {
             doIotNotify();
+            UpdataReportData();
         }
     }
 

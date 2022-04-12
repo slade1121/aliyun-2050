@@ -34,6 +34,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.phoenixcontact.AliyunIotMqtt.BAliIotDriver;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -53,10 +54,7 @@ public class ThingSample extends BaseSample {
 
     private String identity = null;
     private String value = null;
-    private ValueWrapper valueWrapper = null;
     private HashMap<String, ValueWrapper> valueWrapperMap = new HashMap<String, ValueWrapper>();
-    private ThingData mThingData = null;
-    private Gson mGson = new Gson();
 
     private boolean isEvent = false;
 
@@ -138,95 +136,96 @@ public class ThingSample extends BaseSample {
                 }
                 return;
             }
-            if (TmpConstant.TYPE_VALUE_DOUBLE.equals(property.getDataType().getType())) {
+            if (!TmpConstant.TYPE_VALUE_DOUBLE.equals(property.getDataType().getType())) {
+                if (TmpConstant.TYPE_VALUE_BOOLEAN.equals(property.getDataType().getType())) {
+                    int parseData = getInt(value);
+                    if (parseData == 0 || parseData == 1) {
+                        updateCache(property.getIdentifier(), new ValueWrapper.BooleanValueWrapper(parseData));
+                    } else {
+                        ALog.w(TAG, "数据格式不对");
+                    }
+                    return;
+                }
+                if (TmpConstant.TYPE_VALUE_TEXT.equals(property.getDataType().getType())) {
+                    updateCache(property.getIdentifier(), new ValueWrapper.StringValueWrapper(value));
+                    return;
+                }
+                if (TmpConstant.TYPE_VALUE_DATE.equals(property.getDataType().getType())) {
+                    updateCache(property.getIdentifier(), new ValueWrapper.DateValueWrapper(value));
+                    return;
+                }
+                if (TmpConstant.TYPE_VALUE_ENUM.equalsIgnoreCase(property.getDataType().getType())) {
+                    updateCache(property.getIdentifier(), new ValueWrapper.EnumValueWrapper(getInt(value)));
+                    return;
+                }
+                if (TmpConstant.TYPE_VALUE_ARRAY.equalsIgnoreCase(property.getDataType().getType())) {
+                    ValueWrapper.ArrayValueWrapper arrayValueWrapper = GsonUtils.fromJson(value, new TypeToken<ValueWrapper>() {
+                    }.getType());
+                    updateCache(property.getIdentifier(), arrayValueWrapper);
+                    return;
+                }
+                // 结构体数据解析  结构体不支持嵌套结构体和数组
+                if (TmpConstant.TYPE_VALUE_STRUCT.equals(property.getDataType().getType())) {
+                    try {
+                        List<Map<String, Object>> specsList = (List<Map<String, Object>>) property.getDataType().getSpecs();
+                        if (specsList == null || specsList.size() == 0) {
+                            ALog.w(TAG, "云端创建的struct结构为空，不上传任何值。");
+                            return;
+                        }
+                        Gson gson = new Gson();
+                        JsonObject dataJson = gson.fromJson(value, JsonObject.class);
+                        Map<String, ValueWrapper> dataMap = new HashMap<String, ValueWrapper>();
+                        Map<String, Object> specsItem = null;
+                        for (int i = 0; i < specsList.size(); i++) {
+                            specsItem = specsList.get(i);
+                            if (specsItem == null) {
+                                continue;
+                            }
+                            String idKey = (String) specsItem.get("identifier");
+                            String dataType = (String) ((Map) specsItem.get("dataType")).get("type");
+                            if (idKey != null && dataJson.has(idKey) && dataType != null) {
+                                ValueWrapper valueItem = null;
+                                if ("int".equals(dataType)) {
+                                    valueItem = new ValueWrapper.IntValueWrapper(getInt(String.valueOf(dataJson.get(idKey))));
+                                } else if ("text".equals(dataType)) {
+                                    valueItem = new ValueWrapper.StringValueWrapper(dataJson.get(idKey).getAsString());
+                                } else if ("float".equals(dataType) || "double".equals(dataType)) {
+                                    valueItem = new ValueWrapper.DoubleValueWrapper(getDouble(String.valueOf(dataJson.get(idKey))));
+                                } else if ("bool".equals(dataType)) {
+                                    valueItem = new ValueWrapper.BooleanValueWrapper(getInt(String.valueOf(dataJson.get(idKey))));
+                                } else if ("date".equals(dataType)) {
+                                    if (isValidInt(String.valueOf(dataJson.get(idKey)))) {
+                                        valueItem = new ValueWrapper.DateValueWrapper(String.valueOf(dataJson.get(idKey)));
+                                    } else {
+                                        ALog.w(TAG, "数据格式不对");
+                                    }
+                                } else if ("enum".equals(dataType)) {
+                                    valueItem = new ValueWrapper.EnumValueWrapper(getInt(String.valueOf(dataJson.get(idKey))));
+                                } else {
+                                    ALog.w(TAG, "数据格式不支持");
+                                }
+                                if (valueItem != null) {
+                                    dataMap.put(idKey, valueItem);
+                                }
+                            }
+                        }
+
+                        updateCache(property.getIdentifier(), new ValueWrapper.StructValueWrapper(dataMap));
+                    } catch (Exception e) {
+                        ALog.e(TAG, "数据格式不正确");
+                    }
+                    return;
+                }
+                ALog.w(TAG, "该类型Demo暂不支持，用户可参照其他类型代码示例开发支持。");
+            } else {
                 Double parseData = getDouble(value);
                 if (parseData != null) {
-                    updateCache(property.getIdentifier(),new ValueWrapper.DoubleValueWrapper(parseData));
+                    updateCache(property.getIdentifier(), new ValueWrapper.DoubleValueWrapper(parseData));
                 } else {
                     ALog.w(TAG, "数据格式不对");
                 }
                 return;
             }
-            if (TmpConstant.TYPE_VALUE_BOOLEAN.equals(property.getDataType().getType())) {
-                int parseData = getInt(value);
-                if (parseData == 0 || parseData == 1) {
-                    updateCache(property.getIdentifier(), new ValueWrapper.BooleanValueWrapper(parseData));
-                } else {
-                    ALog.w(TAG, "数据格式不对");
-                }
-                return;
-            }
-            if (TmpConstant.TYPE_VALUE_TEXT.equals(property.getDataType().getType())) {
-                updateCache(property.getIdentifier(), new ValueWrapper.StringValueWrapper(value));
-                return;
-            }
-            if (TmpConstant.TYPE_VALUE_DATE.equals(property.getDataType().getType())) {
-                updateCache(property.getIdentifier(), new ValueWrapper.DateValueWrapper(value));
-                return;
-            }
-            if (TmpConstant.TYPE_VALUE_ENUM.equalsIgnoreCase(property.getDataType().getType())) {
-                updateCache(property.getIdentifier(), new ValueWrapper.EnumValueWrapper(getInt(value)));
-                return;
-            }
-            if (TmpConstant.TYPE_VALUE_ARRAY.equalsIgnoreCase(property.getDataType().getType())) {
-                ValueWrapper.ArrayValueWrapper arrayValueWrapper = GsonUtils.fromJson(value, new TypeToken<ValueWrapper>() {
-                }.getType());
-                updateCache(property.getIdentifier(), arrayValueWrapper);
-                return;
-            }
-            // 结构体数据解析  结构体不支持嵌套结构体和数组
-            if (TmpConstant.TYPE_VALUE_STRUCT.equals(property.getDataType().getType())) {
-                try {
-                    List<Map<String, Object>> specsList = (List<Map<String, Object>>) property.getDataType().getSpecs();
-                    if (specsList == null || specsList.size() == 0) {
-                        ALog.w(TAG, "云端创建的struct结构为空，不上传任何值。");
-                        return;
-                    }
-                    Gson gson = new Gson();
-                    JsonObject dataJson = gson.fromJson(value, JsonObject.class);
-                    Map<String, ValueWrapper> dataMap = new HashMap<String, ValueWrapper>();
-                    Map<String, Object> specsItem = null;
-                    for (int i = 0; i < specsList.size(); i++) {
-                        specsItem = specsList.get(i);
-                        if (specsItem == null) {
-                            continue;
-                        }
-                        String idKey = (String) specsItem.get("identifier");
-                        String dataType = (String) ((Map) specsItem.get("dataType")).get("type");
-                        if (idKey != null && dataJson.has(idKey) && dataType != null) {
-                            ValueWrapper valueItem = null;
-                            if ("int".equals(dataType)) {
-                                valueItem = new ValueWrapper.IntValueWrapper(getInt(String.valueOf(dataJson.get(idKey))));
-                            } else if ("text".equals(dataType)) {
-                                valueItem = new ValueWrapper.StringValueWrapper(dataJson.get(idKey).getAsString());
-                            } else if ("float".equals(dataType) || "double".equals(dataType)) {
-                                valueItem = new ValueWrapper.DoubleValueWrapper(getDouble(String.valueOf(dataJson.get(idKey))));
-                            } else if ("bool".equals(dataType)) {
-                                valueItem = new ValueWrapper.BooleanValueWrapper(getInt(String.valueOf(dataJson.get(idKey))));
-                            } else if ("date".equals(dataType)) {
-                                if (isValidInt(String.valueOf(dataJson.get(idKey)))) {
-                                    valueItem = new ValueWrapper.DateValueWrapper(String.valueOf(dataJson.get(idKey)));
-                                } else {
-                                    ALog.w(TAG, "数据格式不对");
-                                }
-                            } else if ("enum".equals(dataType)) {
-                                valueItem = new ValueWrapper.EnumValueWrapper(getInt(String.valueOf(dataJson.get(idKey))));
-                            } else {
-                                ALog.w(TAG, "数据格式不支持");
-                            }
-                            if (valueItem != null) {
-                                dataMap.put(idKey, valueItem);
-                            }
-                        }
-                    }
-
-                    updateCache(property.getIdentifier(), new ValueWrapper.StructValueWrapper(dataMap));
-                } catch (Exception e) {
-                    ALog.e(TAG, "数据格式不正确");
-                }
-                return;
-            }
-            ALog.w(TAG, "该类型Demo暂不支持，用户可参照其他类型代码示例开发支持。");
         } catch (Exception e) {
             ALog.e(TAG, "数据格式不对");
             e.printStackTrace();
@@ -368,27 +367,26 @@ public class ThingSample extends BaseSample {
     }
 
     public void report() {
-        if (isEvent) {
-            ALog.d(TAG, "上报事件" + identity);
-            reportEvent();
-        } else {
-            ALog.d(TAG, "上报属性" + identity);
-            reportProperty();
-        }
+//        if (isEvent) {
+//            ALog.d(TAG, "上报事件" + identity);
+//            reportEvent();
+//        } else {
+//            ALog.d(TAG, "上报属性" + identity);
+//            reportProperty();
+//        }
+        reportProperty();
     }
+
 
     private void reportProperty(){
 
-        if (valueWrapperMap == null) {
+        if (ReportData.getInstance().ReportDataWrapperMap == null) {
             ALog.e(TAG, "没有数据");
             return;
         }
 
-        ALog.d(TAG, "上报 属性identity=" + identity);
+        Map<String, ValueWrapper> reportData =  ReportData.getInstance().ReportDataWrapperMap;
 
-        Map<String, ValueWrapper> reportData = new HashMap<String, ValueWrapper>();
-
-        reportData = valueWrapperMap;
 
         LinkKit.getInstance().getDeviceThing().thingPropertyPost(reportData, new IPublishResourceListener() {
 

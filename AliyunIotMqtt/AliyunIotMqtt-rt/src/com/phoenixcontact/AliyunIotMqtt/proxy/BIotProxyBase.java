@@ -11,6 +11,7 @@
 package com.phoenixcontact.AliyunIotMqtt.proxy;
 
 import com.phoenixcontact.AliyunIotMqtt.BAliIotDriver;
+import com.phoenixcontact.AliyunIotMqtt.Devices.ReportData;
 import com.phoenixcontact.AliyunIotMqtt.support.AccessMode;
 import com.phoenixcontact.AliyunIotMqtt.support.IotProperty;
 import com.tridium.driver.util.DrUtil;
@@ -163,6 +164,12 @@ public abstract class BIotProxyBase extends BComponent {
     private Logger log = Logger.getLogger(getClass().getSimpleName());
 
     public abstract Object getValue();
+
+    public void UpdataReportData() {
+        ReportData.getInstance().ReportDataWrapperMap.get(getIdentifier()).setValue(getValue());
+    }
+
+
 
     public BIotProxyBase() {
     }

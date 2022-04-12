@@ -10,6 +10,8 @@
 
 package com.phoenixcontact.AliyunIotMqtt.proxy;
 
+import com.phoenixcontact.AliyunIotMqtt.Devices.ReportData;
+
 import javax.baja.nre.annotations.NiagaraProperty;
 import javax.baja.nre.annotations.NiagaraType;
 import javax.baja.status.BStatusBoolean;
@@ -91,12 +93,14 @@ public class BIotBooleanWriteableProxy extends BIotProxyBase {
         super.changed(property, context);
         if (property == shadow && this.getNotifyWhenChanged()) {
             doIotNotify();
+            UpdataReportData();
         }
     }
 
     @Override
     public Object getValue() {
         return ((BStatusBoolean) this.getParent().get("out")).getValue();
+
     }
 
     private Logger log = Logger.getLogger(getClass().getSimpleName());

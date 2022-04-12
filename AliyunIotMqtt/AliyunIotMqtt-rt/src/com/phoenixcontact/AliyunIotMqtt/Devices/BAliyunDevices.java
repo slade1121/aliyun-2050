@@ -63,8 +63,8 @@ import java.util.logging.Logger;
 @NiagaraProperty(name = "port", type = "int", defaultValue = "1883", flags = Flags.SUMMARY)
 @NiagaraProperty(name = "ConnectStatus", type = "BStatusBoolean", defaultValue = "new BStatusBoolean(false)", flags = Flags.READONLY)
 @NiagaraAction(name = "reconnect", flags = Flags.SUMMARY)
-@NiagaraAction(name = "disConnect", flags = Flags.SUMMARY)
-@NiagaraAction(name = "checkConnect", flags = Flags.HIDDEN)
+//@NiagaraAction(name = "disConnect", flags = Flags.SUMMARY)
+//@NiagaraAction(name = "checkConnect", flags = Flags.HIDDEN)
 
 //javax.baja.sys.TypeException: java.lang.NoClassDefFoundError: org/eclipse/paho/client/mqttv3/MqttException AliyunIotMqtt:AliyunDevices=com.phoenixcontact.AliyunIotMqtt.Devices.BAliyunDevices
 public class BAliyunDevices extends BComponent {
@@ -72,8 +72,8 @@ public class BAliyunDevices extends BComponent {
 
     
 /*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
-/*@ $com.phoenixcontact.AliyunIotMqtt.Devices.BAliyunDevices(873948881)1.0$ @*/
-/* Generated Tue Apr 12 09:32:59 CST 2022 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+/*@ $com.phoenixcontact.AliyunIotMqtt.Devices.BAliyunDevices(695544686)1.0$ @*/
+/* Generated Tue Apr 12 15:59:20 CST 2022 by Slot-o-Matic (c) Tridium, Inc. 2012 */
 
 ////////////////////////////////////////////////////////////////
 // Property "productKey"
@@ -253,38 +253,6 @@ public class BAliyunDevices extends BComponent {
   public void reconnect() { invoke(reconnect, null, null); }
 
 ////////////////////////////////////////////////////////////////
-// Action "disConnect"
-////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code disConnect} action.
-   * @see #disConnect()
-   */
-  public static final Action disConnect = newAction(Flags.SUMMARY, null);
-  
-  /**
-   * Invoke the {@code disConnect} action.
-   * @see #disConnect
-   */
-  public void disConnect() { invoke(disConnect, null, null); }
-
-////////////////////////////////////////////////////////////////
-// Action "checkConnect"
-////////////////////////////////////////////////////////////////
-  
-  /**
-   * Slot for the {@code checkConnect} action.
-   * @see #checkConnect()
-   */
-  public static final Action checkConnect = newAction(Flags.HIDDEN, null);
-  
-  /**
-   * Invoke the {@code checkConnect} action.
-   * @see #checkConnect
-   */
-  public void checkConnect() { invoke(checkConnect, null, null); }
-
-////////////////////////////////////////////////////////////////
 // Type
 ////////////////////////////////////////////////////////////////
   
@@ -329,7 +297,7 @@ public class BAliyunDevices extends BComponent {
     public void started() throws Exception {
         super.started();
         init();
-        Clock.Ticket ct = Clock.schedulePeriodically(this,BRelTime.make(3000),checkConnect,null);
+//        Clock.Ticket ct = Clock.schedulePeriodically(this,BRelTime.make(3000),checkConnect,null);
     }
 
     /**
@@ -396,6 +364,7 @@ public class BAliyunDevices extends BComponent {
         params.fmVersion = "1.0.2";
 
         thingTestManager = new ThingSample(deviceInfoData.productKey, deviceInfoData.deviceName);
+
         LinkKit.getInstance().init(params, new ILinkKitConnectListener() {
 
             @Override
@@ -418,11 +387,12 @@ public class BAliyunDevices extends BComponent {
      * @param deviceInfoData
      */
     public void executeScheduler(DeviceInfoData deviceInfoData) {
-        thingTestManager.readData(System.getProperty("user.dir") + "/test_case.json");
+//        thingTestManager.readData(System.getProperty("user.dir") + "/test_case.json");
+
 //        thingTestManager.setServiceHandler();
         testMqtt();
-        testLabel();
-        testCota();
+//        testLabel();
+//        testCota();
 
         // 测试网关子设备管理功能，高级版功能
 //        testGateway(deviceInfoData);
@@ -473,7 +443,6 @@ public class BAliyunDevices extends BComponent {
         }
 //        sample.shadowDelete();
     }
-
 
     /**
      * 动态注册示例代码
@@ -587,10 +556,15 @@ public class BAliyunDevices extends BComponent {
 //        }
     }
 
-
     public void doCheckConnect(){
 
     }
+    public void doReconnect(){
+        deinit();
+        init();
+
+    }
+
 
 
     /**

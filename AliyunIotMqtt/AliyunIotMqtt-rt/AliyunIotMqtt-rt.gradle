@@ -26,7 +26,6 @@ dependencies {
   compile "phoenixcontact:emalyticsHVAC-rt:1.6"
 
   compile 'com.google.code.gson:gson:2.8.1'
-  compile 'com.aliyun.alink.linksdk'
 
   uberjar files("lib/guava-27.0.1-jre.jar")
   uberjar files("lib/iot-apiclient-1.0.0.jar")
@@ -41,6 +40,7 @@ dependencies {
   uberjar files("lib/public-cmp-java-1.3.5.jar")
   uberjar files("lib/public-tmp-java-1.0.2.jar")
   uberjar files("lib/tools-java-1.0.1.jar")
+  uberjar files("lib/fastjson-1.2.40.jar")
 
 }
 

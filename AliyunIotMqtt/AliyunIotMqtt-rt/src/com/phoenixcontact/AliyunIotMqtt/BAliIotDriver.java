@@ -10,6 +10,12 @@
 
 package com.phoenixcontact.AliyunIotMqtt;
 
+import com.aliyun.alink.linksdk.tmp.device.payload.ValueWrapper;
+import com.aliyun.alink.linksdk.tmp.utils.TmpConstant;
+import com.aliyun.alink.linksdk.tools.ALog;
+import com.phoenixcontact.AliyunIotMqtt.Devices.ReportData;
+import com.phoenixcontact.AliyunIotMqtt.Devices.TmpConstantEmalytics;
+import com.phoenixcontact.AliyunIotMqtt.proxy.BIotNumericWriteableProxy;
 import com.phoenixcontact.AliyunIotMqtt.proxy.BIotProxyBase;
 import com.phoenixcontact.AliyunIotMqtt.support.IotProperty;
 import com.tridium.json.JSONArray;
@@ -21,6 +27,7 @@ import javax.baja.nre.annotations.NiagaraAction;
 import javax.baja.nre.annotations.NiagaraType;
 import javax.baja.sys.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
@@ -124,7 +131,21 @@ public class BAliIotDriver extends BComponent {
         });
     }
 
+//    private void buildPointsRef() {
+//        ProxyMap.clear();
+//        BControlPoint[] cps = this.getChildren(BControlPoint.class);
+//        for (BControlPoint cp : cps) {
+//            BIotProxyBase[] ps = cp.getChildren(BIotProxyBase.class);
+//            if (ps.length != 0) {
+//                BIotProxyBase p = ps[0];
+//                ProxyMap.put(p.getIdentifier(), p);
+//            }
+//        }
+//    }
+
+    private ReportData reportData = new ReportData();
     private void buildPointsRef() {
+        ReportData.getInstance().ReportDataWrapperMap.clear();
         ProxyMap.clear();
         BControlPoint[] cps = this.getChildren(BControlPoint.class);
         for (BControlPoint cp : cps) {
@@ -132,8 +153,90 @@ public class BAliIotDriver extends BComponent {
             if (ps.length != 0) {
                 BIotProxyBase p = ps[0];
                 ProxyMap.put(p.getIdentifier(), p);
+
+                getData(p);
+
             }
         }
+    }
+
+
+    private  void  getData(BIotProxyBase p){
+
+//        if (TmpConstant.TYPE_VALUE_INTEGER.equals(p.getProperty("shadow").getType().getTypeName())) {
+//            int parseData = getInt(p.getProperty("shadow"));
+//            if (parseData != 0) {
+//                updateCache(p.getIdentifier(),new ValueWrapper.IntValueWrapper(parseData) );
+//            } else {
+//                log.info("数据格式不对");
+//            }
+//            return;
+//        }
+//        if (p.getProperty("shadow").getType().getTypeName().equals("StatusNumeric")) {
+//            int parseData = (int)p.getValue();
+//            if (parseData != 0) {
+//                updateCache(p.getIdentifier(),new ValueWrapper.IntValueWrapper(parseData) );
+//            } else {
+//                log.info("数据格式不对");
+//            }
+//            return;
+//        }
+
+
+
+//        if (TmpConstant.TYPE_VALUE_FLOAT.equals(p.getProperty("shadow").getType().getTypeName())) {
+//            Double parseData = (Double) p.getValue();
+//            if (parseData != null) {
+//                updateCache(p.getIdentifier(), new ValueWrapper.DoubleValueWrapper(parseData));
+//            }  else {
+//            log.info("数据格式不对");
+//            }
+//            return;
+//        }
+
+//        if (TmpConstant.TYPE_VALUE_DOUBLE.equals(p.getProperty("shadow").getType().getTypeName())) {
+//            Double parseData = getDouble(p.getProperty("shadow"));
+//            if (parseData != null) {
+//                updateCache(p.getIdentifier(),new ValueWrapper.DoubleValueWrapper(parseData));
+//            } else {
+//                log.info("数据格式不对");
+//            }
+//            return;
+//        }
+        if (p.getProperty("shadow").getType().getTypeName().equals("StatusNumeric")) {
+            Double parseData = (Double) p.getValue();
+            if (parseData != null) {
+                updateCache(p.getIdentifier(),new ValueWrapper.DoubleValueWrapper(parseData));
+            } else {
+                log.info("数据格式不对");
+            }
+            return;
+        }
+
+
+//        if (TmpConstantEmalytics.TYPE_VALUE_BStatusBoolean.equals(p.getProperty("shadow").getType().getTypeName())) {
+//            int parseData = getInt(p.getProperty("shadow"));
+//            if (parseData == 0 || parseData == 1) {
+//                updateCache(p.getIdentifier(), new ValueWrapper.BooleanValueWrapper(parseData));
+//            } else {
+//                log.info("数据格式不对");
+//            }
+//            return;
+//        }
+        if (p.getProperty("shadow").getType().getTypeName().equals("StatusBoolean")) {
+            int parseData = (boolean)p.getValue()?1:0;
+            if (parseData == 0 || parseData == 1) {
+                updateCache(p.getIdentifier(), new ValueWrapper.BooleanValueWrapper(parseData));
+            } else {
+                log.info("数据格式不对");
+            }
+            return;
+        }
+    }
+
+    private void updateCache(String identifier, ValueWrapper valueWrapper ) {
+
+         ReportData.getInstance().ReportDataWrapperMap.put(identifier,valueWrapper);
     }
 
     public void onPointNotify(BIotProxyBase point) {
