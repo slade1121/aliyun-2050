@@ -27,6 +27,9 @@ import com.aliyun.alink.linksdk.channel.core.base.AError;
 import com.aliyun.alink.linksdk.tmp.device.payload.ValueWrapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+//import com.alibaba.fastjson.JSONObject;
+
+
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
@@ -331,10 +334,10 @@ public class BAliyunDevices extends BComponent {
          * 设置 Mqtt 初始化参数
          */
         IoTMqttClientConfig config = new IoTMqttClientConfig();
-        config.productKey = getProductKey();
-        config.deviceName = getDeviceName();
-        config.deviceSecret = getDeviceSecret();
-        config.channelHost = getProductKey() + ".iot-as-mqtt." + getRegionId() + ".aliyuncs.com:1883";
+        config.productKey = deviceInfoData.productKey;
+        config.deviceName = deviceInfoData.deviceName;
+        config.deviceSecret = deviceInfoData.deviceSecret;
+        config.channelHost = deviceInfoData.productKey + ".iot-as-mqtt." + deviceInfoData.region + ".aliyuncs.com:1883";
         /**
          * 是否接受离线消息
          * 对应 mqtt 的 cleanSession 字段
@@ -346,8 +349,8 @@ public class BAliyunDevices extends BComponent {
          * 设置初始化三元组信息，用户传入
          */
         DeviceInfo deviceInfo = new DeviceInfo();
-        deviceInfo.productKey = getProductKey();
-        deviceInfo.deviceName = getDeviceName();
+        deviceInfo.productKey = deviceInfoData.productKey;
+        deviceInfo.deviceName = deviceInfoData.deviceName;
         deviceInfo.deviceSecret = deviceInfoData.deviceSecret;
 
         params.deviceInfo = deviceInfo;
@@ -363,7 +366,7 @@ public class BAliyunDevices extends BComponent {
         params.propertyValues = propertyValues;
         params.fmVersion = "1.0.2";
 
-        thingTestManager = new ThingSample(deviceInfoData.productKey, deviceInfoData.deviceName);
+        thingTestManager = new ThingSample(deviceInfo.productKey, deviceInfo.deviceName);
 
         LinkKit.getInstance().init(params, new ILinkKitConnectListener() {
 
@@ -390,7 +393,7 @@ public class BAliyunDevices extends BComponent {
 //        thingTestManager.readData(System.getProperty("user.dir") + "/test_case.json");
 
 //        thingTestManager.setServiceHandler();
-        testMqtt();
+//        testMqtt();
 //        testLabel();
 //        testCota();
 
@@ -420,29 +423,29 @@ public class BAliyunDevices extends BComponent {
         }, 3, 5, TimeUnit.SECONDS);
     }
 
-    private void testDeviceShadow() {
-        DeviceShadowSample sample = new DeviceShadowSample();
-        try {
-            sample.listenDownStream();
-            sample.shadowGet();
-            try {
-                Thread.sleep(5*1000);
-            } catch (Exception e){
-
-            }
-            testMqtt();
-            // 异步操作，注意别和删除操作一起执行，不能保持时序
-            sample.shadowUpdate();
-
-            // 异步操作，注意别和更新一起执行
-//            sample.shadowDelete();
-            // 异步操作，
-//            sample.shadowDeleteAll();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-//        sample.shadowDelete();
-    }
+//    private void testDeviceShadow() {
+//        DeviceShadowSample sample = new DeviceShadowSample();
+//        try {
+//            sample.listenDownStream();
+//            sample.shadowGet();
+//            try {
+//                Thread.sleep(5*1000);
+//            } catch (Exception e){
+//
+//            }
+//            testMqtt();
+//            // 异步操作，注意别和删除操作一起执行，不能保持时序
+//            sample.shadowUpdate();
+//
+//            // 异步操作，注意别和更新一起执行
+////            sample.shadowDelete();
+//            // 异步操作，
+////            sample.shadowDeleteAll();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+////        sample.shadowDelete();
+//    }
 
     /**
      * 动态注册示例代码
@@ -452,49 +455,51 @@ public class BAliyunDevices extends BComponent {
      * 4.调用该方法；
      * 5.拿到deviceSecret返回之后 调初始化建联；
      */
-    public void deviceRegister(DeviceInfo deviceInfo) {
-        LinkKitInitParams params = new LinkKitInitParams();
-        IoTMqttClientConfig config = new IoTMqttClientConfig();
-        config.productKey = deviceInfo.productKey;
-        config.deviceName = deviceInfo.deviceName;
-
-        params.mqttClientConfig = config;
-        params.connectConfig = new IoTApiClientConfig();
-
-        params.deviceInfo = deviceInfo;
-
-        final CommonRequest request = new CommonRequest();
-        request.setPath("/auth/register/device");
-        LinkKit.getInstance().deviceRegister(params, request, new IoTCallback() {
-            public void onFailure(CommonRequest commonRequest, Exception e) {
-                log.warning("动态注册失败 " + e);
-            }
-
-            public void onResponse(CommonRequest commonRequest, CommonResponse commonResponse) {
-                if (commonResponse == null || StringUtils.isEmptyString(commonResponse.getData())) {
-                   log.warning("动态注册失败 response=null");
-                    return;
-                }
-                try {
-                    ResponseModel<Map<String, String>> response = new Gson().fromJson(commonResponse.getData(), new TypeToken<ResponseModel<Map<String, String>>>() {
-                    }.getType());
-                    if (response != null && "200".equals(response.code)) {
-                        log.warning("register success " + (commonResponse == null ? "" : commonResponse.getData()));
-                        /**  获取 deviceSecret, 存储到本地，然后执行初始化建联
-                         * 这个流程只能走一次，获取到 secret 之后，下次启动需要读取本地存储的三元组，
-                         * 直接执行初始化建联，不可以再走动态初始化
-                         */
-                        // deviceSecret = response.data.get("deviceSecret");
-                        // init(pk,dn,ds);
-                        return;
-                    }
-                } catch (Exception e) {
-
-                }
-                log.warning("register fail " + commonResponse.getData());
-            }
-        });
-    }
+//    public void deviceRegister(DeviceInfo deviceInfo) {
+//        LinkKitInitParams params = new LinkKitInitParams();
+//        IoTMqttClientConfig config = new IoTMqttClientConfig();
+//        config.productKey = deviceInfo.productKey;
+//        config.deviceName = deviceInfo.deviceName;
+//
+//        params.mqttClientConfig = config;
+//        params.connectConfig = new IoTApiClientConfig();
+//
+//        params.deviceInfo = deviceInfo;
+//
+//        final CommonRequest request = new CommonRequest();
+//        request.setPath("/auth/register/device");
+//        LinkKit.getInstance().deviceRegister(params, request, new IoTCallback() {
+//            public void onFailure(CommonRequest commonRequest, Exception e) {
+//                log.warning("动态注册失败 " + e);
+//            }
+//
+//            public void onResponse(CommonRequest commonRequest, CommonResponse commonResponse) {
+//                if (commonResponse == null || StringUtils.isEmptyString(commonResponse.getData())) {
+//                   log.warning("动态注册失败 response=null");
+//                    return;
+//                }
+//                try {
+//                    ResponseModel<Map<String, String>> response = new Gson().fromJson(commonResponse.getData(), new TypeToken<ResponseModel<Map<String, String>>>() {
+//                    }.getType());
+//
+//
+//                    if (response != null && "200".equals(response.code)) {
+//                        log.warning("register success " + (commonResponse == null ? "" : commonResponse.getData()));
+//                        /**  获取 deviceSecret, 存储到本地，然后执行初始化建联
+//                         * 这个流程只能走一次，获取到 secret 之后，下次启动需要读取本地存储的三元组，
+//                         * 直接执行初始化建联，不可以再走动态初始化
+//                         */
+//                        // deviceSecret = response.data.get("deviceSecret");
+//                        // init(pk,dn,ds);
+//                        return;
+//                    }
+//                } catch (Exception e) {
+//
+//                }
+//                log.warning("register fail " + commonResponse.getData());
+//            }
+//        });
+//    }
 
     private void deinit(){
         LinkKit.getInstance().deinit();
@@ -535,25 +540,6 @@ public class BAliyunDevices extends BComponent {
         sample.labelUpdate();
         // 测试标签删除
 //        sample.labelDelete();
-    }
-
-    /**
-     * @param deviceInfoData
-     * 网关测试
-     */
-    private void testGateway(DeviceInfoData deviceInfoData) {
-        GatewaySample sample = new GatewaySample(getProductKey(), getDeviceName(), deviceInfoData.subDevice);
-        sample.getSubDevices();
-        // 注册 + 添加 + 登录 + 上报
-        sample.subdevRegister();
-
-//        try {
-//            Thread.sleep(10*1000);
-//            // 测试下线 + 删除
-//            sample.subDevOffline();
-//        } catch (Exception e){
-//            e.printStackTrace();
-//        }
     }
 
     public void doCheckConnect(){

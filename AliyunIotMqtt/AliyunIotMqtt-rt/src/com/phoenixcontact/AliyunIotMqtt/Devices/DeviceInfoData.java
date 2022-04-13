@@ -1,7 +1,7 @@
 package com.phoenixcontact.AliyunIotMqtt.Devices;
 
 
-import com.alibaba.fastjson.JSONObject;
+//import com.alibaba.fastjson.JSONObject;
 import com.aliyun.alink.dm.api.BaseInfo;
 import com.aliyun.alink.dm.api.DeviceInfo;
 
@@ -37,9 +37,10 @@ public class DeviceInfoData extends DeviceInfo {
      */
     public List<BaseInfo> subDevice = null;
 
-    @Override
-    public String toString() {
-        return JSONObject.toJSONString(this);
-    }
+//    @Override
+//    public String toString() {
+//        return JSONObject.toJSONString(this);
+//    }
+
 }
 

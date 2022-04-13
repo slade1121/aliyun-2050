@@ -1,9 +1,6 @@
 package com.phoenixcontact.AliyunIotMqtt.Devices;
 
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.aliyun.alink.apiclient.utils.StringUtils;
 import com.aliyun.alink.dm.api.BaseInfo;
 import com.aliyun.alink.linkkit.api.LinkKit;
@@ -35,6 +32,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.phoenixcontact.AliyunIotMqtt.BAliIotDriver;
+import com.tridium.json.JSONArray;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -62,301 +60,301 @@ public class ThingSample extends BaseSample {
         super(pk, dn);
     }
 
-    public void readData(String path) {
-        String data = FileUtils.readFile(path);
+//    public void readData(String path) {
+//        String data = FileUtils.readFile(path);
+//
+//        JSONObject obj =  new JSONObject(data);
+//        JSONArray arr = obj.getJSONArray("properties");
+//
+//        for(int i = 0; i < arr.length(); i++){
+//
+//            if (arr.getJSONObject(i) == null) {
+//                ALog.e(TAG, "数据格式错误");
+//                return;
+//            }
+//            identity = arr.getJSONObject(i).get("identifier").toString();
+//            value = arr.getJSONObject(i).get("value").toString();
+//
+//            if ("event".equals(arr.getJSONObject(i).get("type"))) {
+//                isEvent = true;
+//                getPostEvent();
+//            } else {
+//                isEvent = false;
+//
+//                getPost(identity, value);
+//            }
+//
+//        }
+//
+//    }
 
-        JSONObject obj =  JSONObject.parseObject(data);
-        JSONArray arr = obj.getJSONArray("properties");
-
-        for(int i = 0; i < arr.size(); i++){
-
-            if (arr.getJSONObject(i) == null) {
-                ALog.e(TAG, "数据格式错误");
-                return;
-            }
-            identity = arr.getJSONObject(i).get("identifier").toString();
-            value = arr.getJSONObject(i).get("value").toString();
-
-            if ("event".equals(arr.getJSONObject(i).get("type"))) {
-                isEvent = true;
-                getPostEvent();
-            } else {
-                isEvent = false;
-
-                getPost(identity, value);
-            }
-
-        }
-
-    }
-
-    private void getPost(String identity, String value) {
-
-        try {
-            if (StringUtils.isEmptyString(identity)) {
-                ALog.w(TAG, "属性错误");
-                return;
-            }
-            List<Property> propertyList = LinkKit.getInstance().getDeviceThing().getProperties();
-            if (propertyList == null) {
-                ALog.w(TAG, "选择的产品property列表为空");
-                return;
-            }
-            Property property = null;
-            for (int i = 0; i < propertyList.size(); i++) {
-                property = propertyList.get(i);
-                if (property == null) {
-                    continue;
-                }
-                if (identity.equals(property.getIdentifier())) {
-                    break;
-                }
-                property = null;
-            }
-            if (property == null) {
-                ALog.w(TAG, "属性不存在");
-                return;
-            }
-
-            if (TmpConstant.TYPE_VALUE_INTEGER.equals(property.getDataType().getType())) {
-                int parseData = getInt(value);
-                if (parseData != DEF_VALUE) {
-                    updateCache(property.getIdentifier(),new ValueWrapper.IntValueWrapper(parseData) );
-                } else {
-                    ALog.w(TAG, "数据格式不对");
-                }
-                return;
-            }
-            if (TmpConstant.TYPE_VALUE_FLOAT.equals(property.getDataType().getType())) {
-                Double parseData = getDouble(value);
-                if (parseData != null) {
-                    updateCache(property.getIdentifier(), new ValueWrapper.DoubleValueWrapper(parseData));
-                } else {
-                    ALog.w(TAG, "数据格式不对");
-                }
-                return;
-            }
-            if (!TmpConstant.TYPE_VALUE_DOUBLE.equals(property.getDataType().getType())) {
-                if (TmpConstant.TYPE_VALUE_BOOLEAN.equals(property.getDataType().getType())) {
-                    int parseData = getInt(value);
-                    if (parseData == 0 || parseData == 1) {
-                        updateCache(property.getIdentifier(), new ValueWrapper.BooleanValueWrapper(parseData));
-                    } else {
-                        ALog.w(TAG, "数据格式不对");
-                    }
-                    return;
-                }
-                if (TmpConstant.TYPE_VALUE_TEXT.equals(property.getDataType().getType())) {
-                    updateCache(property.getIdentifier(), new ValueWrapper.StringValueWrapper(value));
-                    return;
-                }
-                if (TmpConstant.TYPE_VALUE_DATE.equals(property.getDataType().getType())) {
-                    updateCache(property.getIdentifier(), new ValueWrapper.DateValueWrapper(value));
-                    return;
-                }
-                if (TmpConstant.TYPE_VALUE_ENUM.equalsIgnoreCase(property.getDataType().getType())) {
-                    updateCache(property.getIdentifier(), new ValueWrapper.EnumValueWrapper(getInt(value)));
-                    return;
-                }
-                if (TmpConstant.TYPE_VALUE_ARRAY.equalsIgnoreCase(property.getDataType().getType())) {
-                    ValueWrapper.ArrayValueWrapper arrayValueWrapper = GsonUtils.fromJson(value, new TypeToken<ValueWrapper>() {
-                    }.getType());
-                    updateCache(property.getIdentifier(), arrayValueWrapper);
-                    return;
-                }
-                // 结构体数据解析  结构体不支持嵌套结构体和数组
-                if (TmpConstant.TYPE_VALUE_STRUCT.equals(property.getDataType().getType())) {
-                    try {
-                        List<Map<String, Object>> specsList = (List<Map<String, Object>>) property.getDataType().getSpecs();
-                        if (specsList == null || specsList.size() == 0) {
-                            ALog.w(TAG, "云端创建的struct结构为空，不上传任何值。");
-                            return;
-                        }
-                        Gson gson = new Gson();
-                        JsonObject dataJson = gson.fromJson(value, JsonObject.class);
-                        Map<String, ValueWrapper> dataMap = new HashMap<String, ValueWrapper>();
-                        Map<String, Object> specsItem = null;
-                        for (int i = 0; i < specsList.size(); i++) {
-                            specsItem = specsList.get(i);
-                            if (specsItem == null) {
-                                continue;
-                            }
-                            String idKey = (String) specsItem.get("identifier");
-                            String dataType = (String) ((Map) specsItem.get("dataType")).get("type");
-                            if (idKey != null && dataJson.has(idKey) && dataType != null) {
-                                ValueWrapper valueItem = null;
-                                if ("int".equals(dataType)) {
-                                    valueItem = new ValueWrapper.IntValueWrapper(getInt(String.valueOf(dataJson.get(idKey))));
-                                } else if ("text".equals(dataType)) {
-                                    valueItem = new ValueWrapper.StringValueWrapper(dataJson.get(idKey).getAsString());
-                                } else if ("float".equals(dataType) || "double".equals(dataType)) {
-                                    valueItem = new ValueWrapper.DoubleValueWrapper(getDouble(String.valueOf(dataJson.get(idKey))));
-                                } else if ("bool".equals(dataType)) {
-                                    valueItem = new ValueWrapper.BooleanValueWrapper(getInt(String.valueOf(dataJson.get(idKey))));
-                                } else if ("date".equals(dataType)) {
-                                    if (isValidInt(String.valueOf(dataJson.get(idKey)))) {
-                                        valueItem = new ValueWrapper.DateValueWrapper(String.valueOf(dataJson.get(idKey)));
-                                    } else {
-                                        ALog.w(TAG, "数据格式不对");
-                                    }
-                                } else if ("enum".equals(dataType)) {
-                                    valueItem = new ValueWrapper.EnumValueWrapper(getInt(String.valueOf(dataJson.get(idKey))));
-                                } else {
-                                    ALog.w(TAG, "数据格式不支持");
-                                }
-                                if (valueItem != null) {
-                                    dataMap.put(idKey, valueItem);
-                                }
-                            }
-                        }
-
-                        updateCache(property.getIdentifier(), new ValueWrapper.StructValueWrapper(dataMap));
-                    } catch (Exception e) {
-                        ALog.e(TAG, "数据格式不正确");
-                    }
-                    return;
-                }
-                ALog.w(TAG, "该类型Demo暂不支持，用户可参照其他类型代码示例开发支持。");
-            } else {
-                Double parseData = getDouble(value);
-                if (parseData != null) {
-                    updateCache(property.getIdentifier(), new ValueWrapper.DoubleValueWrapper(parseData));
-                } else {
-                    ALog.w(TAG, "数据格式不对");
-                }
-                return;
-            }
-        } catch (Exception e) {
-            ALog.e(TAG, "数据格式不对");
-            e.printStackTrace();
-        }
-    }
-
-    private void getPostEvent() {
-        if (StringUtils.isEmptyString(identity)) {
-            ALog.w(TAG, "事件identifier错误");
-            return;
-        }
-        List<Event> propertyList = LinkKit.getInstance().getDeviceThing().getEvents();
-        if (propertyList == null) {
-            ALog.w(TAG, "选择的产品 event列表为空");
-            return;
-        }
-        Event event = null;
-        for (int i = 0; i < propertyList.size(); i++) {
-            event = propertyList.get(i);
-            if (event == null) {
-                continue;
-            }
-            if (identity.equals(event.getIdentifier())) {
-                break;
-            }
-            event = null;
-        }
-        if (event == null) {
-            ALog.w(TAG, "事件不存在");
-            return;
-        }
-
-        HashMap<String, ValueWrapper> hashMap = new HashMap<String, ValueWrapper>();
-        try {
-            JSONObject object = JSONObject.parseObject(value);
-            if (object == null) {
-                ALog.d(TAG, "参数不能为空");
-                return;
-            }
-            if (event.getOutputData() != null) {
-                for (int i = 0; i < event.getOutputData().size(); i++) {
-                    Arg arg = event.getOutputData().get(i);
-                    if (arg == null || arg.getDataType() == null || arg.getIdentifier() == null) {
-                        continue;
-                    }
-                    String idnValue = String.valueOf(object.get(arg.getIdentifier()));
-                    if (idnValue == null || object.get(arg.getIdentifier()) == null) {
-                        continue;
-                    }
-                    if (TmpConstant.TYPE_VALUE_INTEGER.equals(arg.getDataType().getType())) {
-                        int parseData = getInt(idnValue);
-                        if (parseData != DEF_VALUE) {
-                            hashMap.put(arg.getIdentifier(), new ValueWrapper.IntValueWrapper(parseData));
-                        } else {
-                            ALog.d(TAG, "数据格式不对");
-                            break;
-                        }
-                        continue;
-                    }
-                    if (TmpConstant.TYPE_VALUE_FLOAT.equals(arg.getDataType().getType())) {
-                        Double parseData = getDouble(idnValue);
-                        if (parseData != null) {
-                            hashMap.put(arg.getIdentifier(), new ValueWrapper.DoubleValueWrapper(parseData));
-                        } else {
-                            ALog.d(TAG, "数据格式不对");
-                            break;
-                        }
-                        continue;
-                    }
-                    if (TmpConstant.TYPE_VALUE_DOUBLE.equals(arg.getDataType().getType())) {
-                        Double parseData = getDouble(idnValue);
-                        if (parseData != null) {
-                            hashMap.put(arg.getIdentifier(), new ValueWrapper.DoubleValueWrapper(parseData));
-                        } else {
-                            ALog.d(TAG, "数据格式不对");
-                            break;
-                        }
-                        continue;
-                    }
-                    if (TmpConstant.TYPE_VALUE_BOOLEAN.equals(arg.getDataType().getType())) {
-                        int parseData = getInt(idnValue);
-                        if (parseData == 0 || parseData == 1) {
-                            hashMap.put(arg.getIdentifier(), new ValueWrapper.BooleanValueWrapper(parseData));
-                        } else {
-                            ALog.d(TAG, "数据格式不对");
-                            break;
-                        }
-                        continue;
-                    }
-                    if (TmpConstant.TYPE_VALUE_TEXT.equals(arg.getDataType().getType())) {
-                        hashMap.put(arg.getIdentifier(), new ValueWrapper.StringValueWrapper(idnValue));
-                        continue;
-                    }
-                    if (TmpConstant.TYPE_VALUE_DATE.equals(arg.getDataType().getType())) {
-                        hashMap.put(arg.getIdentifier(), new ValueWrapper.DateValueWrapper(idnValue));
-                        continue;
-                    }
-                    if (TmpConstant.TYPE_VALUE_ENUM.equalsIgnoreCase(arg.getDataType().getType())) {
-                        hashMap.put(arg.getIdentifier(), new ValueWrapper.EnumValueWrapper(getInt(idnValue)));
-                        continue;
-                    }
-                    if (TmpConstant.TYPE_VALUE_ARRAY.equalsIgnoreCase(arg.getDataType().getType())) {
-                        ValueWrapper.ArrayValueWrapper arrayValueWrapper = GsonUtils.fromJson(idnValue, new TypeToken<ValueWrapper>() {
-                        }.getType());
-                        hashMap.put(arg.getIdentifier(), arrayValueWrapper);
-                        continue;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            ALog.w(TAG, "数据格式错误");
-            return;
-        }
-        valueWrapperMap = hashMap;
-    }
-
-    private void reportEvent() {
-        OutputParams params = new OutputParams(valueWrapperMap);
-        LinkKit.getInstance().getDeviceThing().thingEventPost(identity, params, new IPublishResourceListener() {
-            public void onSuccess(String resId, Object o) {
-                // 事件上报成功
-                ALog.d(TAG, "onSuccess() called with: s = [" + resId + "], o = [" + o + "]");
-            }
-
-            public void onError(String resId, AError aError) {
-                // 事件上报失败
-                ALog.w(TAG, "onError() called with: s = [" + resId + "], aError = [" + getError(aError) + "]");
-            }
-        });
-    }
+//    private void getPost(String identity, String value) {
+//
+//        try {
+//            if (StringUtils.isEmptyString(identity)) {
+//                ALog.w(TAG, "属性错误");
+//                return;
+//            }
+//            List<Property> propertyList = LinkKit.getInstance().getDeviceThing().getProperties();
+//            if (propertyList == null) {
+//                ALog.w(TAG, "选择的产品property列表为空");
+//                return;
+//            }
+//            Property property = null;
+//            for (int i = 0; i < propertyList.size(); i++) {
+//                property = propertyList.get(i);
+//                if (property == null) {
+//                    continue;
+//                }
+//                if (identity.equals(property.getIdentifier())) {
+//                    break;
+//                }
+//                property = null;
+//            }
+//            if (property == null) {
+//                ALog.w(TAG, "属性不存在");
+//                return;
+//            }
+//
+//            if (TmpConstant.TYPE_VALUE_INTEGER.equals(property.getDataType().getType())) {
+//                int parseData = getInt(value);
+//                if (parseData != DEF_VALUE) {
+//                    updateCache(property.getIdentifier(),new ValueWrapper.IntValueWrapper(parseData) );
+//                } else {
+//                    ALog.w(TAG, "数据格式不对");
+//                }
+//                return;
+//            }
+//            if (TmpConstant.TYPE_VALUE_FLOAT.equals(property.getDataType().getType())) {
+//                Double parseData = getDouble(value);
+//                if (parseData != null) {
+//                    updateCache(property.getIdentifier(), new ValueWrapper.DoubleValueWrapper(parseData));
+//                } else {
+//                    ALog.w(TAG, "数据格式不对");
+//                }
+//                return;
+//            }
+//            if (!TmpConstant.TYPE_VALUE_DOUBLE.equals(property.getDataType().getType())) {
+//                if (TmpConstant.TYPE_VALUE_BOOLEAN.equals(property.getDataType().getType())) {
+//                    int parseData = getInt(value);
+//                    if (parseData == 0 || parseData == 1) {
+//                        updateCache(property.getIdentifier(), new ValueWrapper.BooleanValueWrapper(parseData));
+//                    } else {
+//                        ALog.w(TAG, "数据格式不对");
+//                    }
+//                    return;
+//                }
+//                if (TmpConstant.TYPE_VALUE_TEXT.equals(property.getDataType().getType())) {
+//                    updateCache(property.getIdentifier(), new ValueWrapper.StringValueWrapper(value));
+//                    return;
+//                }
+//                if (TmpConstant.TYPE_VALUE_DATE.equals(property.getDataType().getType())) {
+//                    updateCache(property.getIdentifier(), new ValueWrapper.DateValueWrapper(value));
+//                    return;
+//                }
+//                if (TmpConstant.TYPE_VALUE_ENUM.equalsIgnoreCase(property.getDataType().getType())) {
+//                    updateCache(property.getIdentifier(), new ValueWrapper.EnumValueWrapper(getInt(value)));
+//                    return;
+//                }
+//                if (TmpConstant.TYPE_VALUE_ARRAY.equalsIgnoreCase(property.getDataType().getType())) {
+//                    ValueWrapper.ArrayValueWrapper arrayValueWrapper = GsonUtils.fromJson(value, new TypeToken<ValueWrapper>() {
+//                    }.getType());
+//                    updateCache(property.getIdentifier(), arrayValueWrapper);
+//                    return;
+//                }
+//                // 结构体数据解析  结构体不支持嵌套结构体和数组
+//                if (TmpConstant.TYPE_VALUE_STRUCT.equals(property.getDataType().getType())) {
+//                    try {
+//                        List<Map<String, Object>> specsList = (List<Map<String, Object>>) property.getDataType().getSpecs();
+//                        if (specsList == null || specsList.size() == 0) {
+//                            ALog.w(TAG, "云端创建的struct结构为空，不上传任何值。");
+//                            return;
+//                        }
+//                        Gson gson = new Gson();
+//                        JsonObject dataJson = gson.fromJson(value, JsonObject.class);
+//                        Map<String, ValueWrapper> dataMap = new HashMap<String, ValueWrapper>();
+//                        Map<String, Object> specsItem = null;
+//                        for (int i = 0; i < specsList.size(); i++) {
+//                            specsItem = specsList.get(i);
+//                            if (specsItem == null) {
+//                                continue;
+//                            }
+//                            String idKey = (String) specsItem.get("identifier");
+//                            String dataType = (String) ((Map) specsItem.get("dataType")).get("type");
+//                            if (idKey != null && dataJson.has(idKey) && dataType != null) {
+//                                ValueWrapper valueItem = null;
+//                                if ("int".equals(dataType)) {
+//                                    valueItem = new ValueWrapper.IntValueWrapper(getInt(String.valueOf(dataJson.get(idKey))));
+//                                } else if ("text".equals(dataType)) {
+//                                    valueItem = new ValueWrapper.StringValueWrapper(dataJson.get(idKey).getAsString());
+//                                } else if ("float".equals(dataType) || "double".equals(dataType)) {
+//                                    valueItem = new ValueWrapper.DoubleValueWrapper(getDouble(String.valueOf(dataJson.get(idKey))));
+//                                } else if ("bool".equals(dataType)) {
+//                                    valueItem = new ValueWrapper.BooleanValueWrapper(getInt(String.valueOf(dataJson.get(idKey))));
+//                                } else if ("date".equals(dataType)) {
+//                                    if (isValidInt(String.valueOf(dataJson.get(idKey)))) {
+//                                        valueItem = new ValueWrapper.DateValueWrapper(String.valueOf(dataJson.get(idKey)));
+//                                    } else {
+//                                        ALog.w(TAG, "数据格式不对");
+//                                    }
+//                                } else if ("enum".equals(dataType)) {
+//                                    valueItem = new ValueWrapper.EnumValueWrapper(getInt(String.valueOf(dataJson.get(idKey))));
+//                                } else {
+//                                    ALog.w(TAG, "数据格式不支持");
+//                                }
+//                                if (valueItem != null) {
+//                                    dataMap.put(idKey, valueItem);
+//                                }
+//                            }
+//                        }
+//
+//                        updateCache(property.getIdentifier(), new ValueWrapper.StructValueWrapper(dataMap));
+//                    } catch (Exception e) {
+//                        ALog.e(TAG, "数据格式不正确");
+//                    }
+//                    return;
+//                }
+//                ALog.w(TAG, "该类型Demo暂不支持，用户可参照其他类型代码示例开发支持。");
+//            } else {
+//                Double parseData = getDouble(value);
+//                if (parseData != null) {
+//                    updateCache(property.getIdentifier(), new ValueWrapper.DoubleValueWrapper(parseData));
+//                } else {
+//                    ALog.w(TAG, "数据格式不对");
+//                }
+//                return;
+//            }
+//        } catch (Exception e) {
+//            ALog.e(TAG, "数据格式不对");
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    private void getPostEvent() {
+//        if (StringUtils.isEmptyString(identity)) {
+//            ALog.w(TAG, "事件identifier错误");
+//            return;
+//        }
+//        List<Event> propertyList = LinkKit.getInstance().getDeviceThing().getEvents();
+//        if (propertyList == null) {
+//            ALog.w(TAG, "选择的产品 event列表为空");
+//            return;
+//        }
+//        Event event = null;
+//        for (int i = 0; i < propertyList.size(); i++) {
+//            event = propertyList.get(i);
+//            if (event == null) {
+//                continue;
+//            }
+//            if (identity.equals(event.getIdentifier())) {
+//                break;
+//            }
+//            event = null;
+//        }
+//        if (event == null) {
+//            ALog.w(TAG, "事件不存在");
+//            return;
+//        }
+//
+//        HashMap<String, ValueWrapper> hashMap = new HashMap<String, ValueWrapper>();
+//        try {
+//            JSONObject object = JSONObject.parseObject(value);
+//            if (object == null) {
+//                ALog.d(TAG, "参数不能为空");
+//                return;
+//            }
+//            if (event.getOutputData() != null) {
+//                for (int i = 0; i < event.getOutputData().size(); i++) {
+//                    Arg arg = event.getOutputData().get(i);
+//                    if (arg == null || arg.getDataType() == null || arg.getIdentifier() == null) {
+//                        continue;
+//                    }
+//                    String idnValue = String.valueOf(object.get(arg.getIdentifier()));
+//                    if (idnValue == null || object.get(arg.getIdentifier()) == null) {
+//                        continue;
+//                    }
+//                    if (TmpConstant.TYPE_VALUE_INTEGER.equals(arg.getDataType().getType())) {
+//                        int parseData = getInt(idnValue);
+//                        if (parseData != DEF_VALUE) {
+//                            hashMap.put(arg.getIdentifier(), new ValueWrapper.IntValueWrapper(parseData));
+//                        } else {
+//                            ALog.d(TAG, "数据格式不对");
+//                            break;
+//                        }
+//                        continue;
+//                    }
+//                    if (TmpConstant.TYPE_VALUE_FLOAT.equals(arg.getDataType().getType())) {
+//                        Double parseData = getDouble(idnValue);
+//                        if (parseData != null) {
+//                            hashMap.put(arg.getIdentifier(), new ValueWrapper.DoubleValueWrapper(parseData));
+//                        } else {
+//                            ALog.d(TAG, "数据格式不对");
+//                            break;
+//                        }
+//                        continue;
+//                    }
+//                    if (TmpConstant.TYPE_VALUE_DOUBLE.equals(arg.getDataType().getType())) {
+//                        Double parseData = getDouble(idnValue);
+//                        if (parseData != null) {
+//                            hashMap.put(arg.getIdentifier(), new ValueWrapper.DoubleValueWrapper(parseData));
+//                        } else {
+//                            ALog.d(TAG, "数据格式不对");
+//                            break;
+//                        }
+//                        continue;
+//                    }
+//                    if (TmpConstant.TYPE_VALUE_BOOLEAN.equals(arg.getDataType().getType())) {
+//                        int parseData = getInt(idnValue);
+//                        if (parseData == 0 || parseData == 1) {
+//                            hashMap.put(arg.getIdentifier(), new ValueWrapper.BooleanValueWrapper(parseData));
+//                        } else {
+//                            ALog.d(TAG, "数据格式不对");
+//                            break;
+//                        }
+//                        continue;
+//                    }
+//                    if (TmpConstant.TYPE_VALUE_TEXT.equals(arg.getDataType().getType())) {
+//                        hashMap.put(arg.getIdentifier(), new ValueWrapper.StringValueWrapper(idnValue));
+//                        continue;
+//                    }
+//                    if (TmpConstant.TYPE_VALUE_DATE.equals(arg.getDataType().getType())) {
+//                        hashMap.put(arg.getIdentifier(), new ValueWrapper.DateValueWrapper(idnValue));
+//                        continue;
+//                    }
+//                    if (TmpConstant.TYPE_VALUE_ENUM.equalsIgnoreCase(arg.getDataType().getType())) {
+//                        hashMap.put(arg.getIdentifier(), new ValueWrapper.EnumValueWrapper(getInt(idnValue)));
+//                        continue;
+//                    }
+//                    if (TmpConstant.TYPE_VALUE_ARRAY.equalsIgnoreCase(arg.getDataType().getType())) {
+//                        ValueWrapper.ArrayValueWrapper arrayValueWrapper = GsonUtils.fromJson(idnValue, new TypeToken<ValueWrapper>() {
+//                        }.getType());
+//                        hashMap.put(arg.getIdentifier(), arrayValueWrapper);
+//                        continue;
+//                    }
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            ALog.w(TAG, "数据格式错误");
+//            return;
+//        }
+//        valueWrapperMap = hashMap;
+//    }
+//
+//    private void reportEvent() {
+//        OutputParams params = new OutputParams(valueWrapperMap);
+//        LinkKit.getInstance().getDeviceThing().thingEventPost(identity, params, new IPublishResourceListener() {
+//            public void onSuccess(String resId, Object o) {
+//                // 事件上报成功
+//                ALog.d(TAG, "onSuccess() called with: s = [" + resId + "], o = [" + o + "]");
+//            }
+//
+//            public void onError(String resId, AError aError) {
+//                // 事件上报失败
+//                ALog.w(TAG, "onError() called with: s = [" + resId + "], aError = [" + getError(aError) + "]");
+//            }
+//        });
+//    }
 
     /**
      * 上报灯的状态

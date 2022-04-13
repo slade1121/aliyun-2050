@@ -19,15 +19,17 @@ dependencies {
   compile "Tridium:baja:4.10"
   compile "Tridium:control-rt:4.10"
   compile "Tridium:driver-rt:4.10"
-  compile 'com.alibaba:fastjson:1.2.25'
+
   //  compile "Tridium:abstractMqttDriver-rt:4.10"
 //  compile "org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0"
 //  compile "org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0"
   compile "phoenixcontact:emalyticsHVAC-rt:1.6"
 
-  compile 'com.google.code.gson:gson:2.8.1'
-
   uberjar files("lib/guava-27.0.1-jre.jar")
+
+  compile 'com.google.code.gson:gson:2.8.1'
+  compile 'com.alibaba:fastjson:1.2.25'
+
   uberjar files("lib/iot-apiclient-1.0.0.jar")
   uberjar files("lib/iot-device-manager-java-1.2.0.2.jar")
   uberjar files("lib/iot-linkkit-java-1.2.0.1.jar")
@@ -40,7 +42,7 @@ dependencies {
   uberjar files("lib/public-cmp-java-1.3.5.jar")
   uberjar files("lib/public-tmp-java-1.0.2.jar")
   uberjar files("lib/tools-java-1.0.1.jar")
-  uberjar files("lib/fastjson-1.2.40.jar")
+
 
 }
 
