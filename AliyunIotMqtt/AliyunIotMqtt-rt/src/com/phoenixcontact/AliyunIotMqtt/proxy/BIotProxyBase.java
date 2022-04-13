@@ -10,6 +10,7 @@
 
 package com.phoenixcontact.AliyunIotMqtt.proxy;
 
+import com.aliyun.alink.linksdk.tmp.device.payload.ValueWrapper;
 import com.phoenixcontact.AliyunIotMqtt.BAliIotDriver;
 import com.phoenixcontact.AliyunIotMqtt.Devices.ReportData;
 import com.phoenixcontact.AliyunIotMqtt.support.AccessMode;
@@ -165,15 +166,10 @@ public abstract class BIotProxyBase extends BComponent {
 
     public abstract Object getValue();
 
-    public void UpdataReportData() {
-        ReportData.getInstance().ReportDataWrapperMap.get(getIdentifier()).setValue(getValue());
-    }
-
-
+    public abstract void UpdataReportData() ;
 
     public BIotProxyBase() {
     }
-
 
     public void doIotNotify() {
         ((BAliIotDriver) DrUtil.getParent(this, BAliIotDriver.TYPE)).onPointNotify(this);

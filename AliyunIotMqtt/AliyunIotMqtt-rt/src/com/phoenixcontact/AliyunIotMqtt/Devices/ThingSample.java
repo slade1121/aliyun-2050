@@ -376,29 +376,29 @@ public class ThingSample extends BaseSample {
     }
 
 
-    private void reportProperty(){
+    private void reportProperty() {
 
         if (ReportData.getInstance().ReportDataWrapperMap == null) {
             ALog.e(TAG, "没有数据");
             return;
         }
 
-        Map<String, ValueWrapper> reportData =  ReportData.getInstance().ReportDataWrapperMap;
+        Map<String, ValueWrapper> reportData = ReportData.getInstance().ReportDataWrapperMap;
 
 
-        LinkKit.getInstance().getDeviceThing().thingPropertyPost(reportData, new IPublishResourceListener() {
+            LinkKit.getInstance().getDeviceThing().thingPropertyPost(reportData, new IPublishResourceListener() {
 
-            public void onSuccess(String s, Object o) {
-                // 属性上报成功
-                ALog.d(TAG, "上报成功 onSuccess() called with: s = [" + s + "], o = [" + o + "]");
-            }
+                public void onSuccess(String s, Object o) {
+                    // 属性上报成功
+                    ALog.d(TAG, "上报成功 onSuccess() called with: s = [" + s + "], o = [" + o + "]");
+                }
 
-            public void onError(String s, AError aError) {
-                // 属性上报失败
-                ALog.d(TAG, "上报失败onError() called with: s = [" + s + "], aError = [" + getError(aError) + "]");
-            }
-        });
-    }
+                public void onError(String s, AError aError) {
+                    // 属性上报失败
+                    ALog.d(TAG, "上报失败onError() called with: s = [" + s + "], aError = [" + getError(aError) + "]");
+                }
+            });
+        }
     /**
      * 云端调用设备的某项服务的时候，设备端需要响应该服务并回复。
      * 设备端事件触发的时候需要调用这个接口上报事件，如事件告警等

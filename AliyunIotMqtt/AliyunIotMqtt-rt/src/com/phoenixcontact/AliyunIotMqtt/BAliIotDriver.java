@@ -153,86 +153,11 @@ public class BAliIotDriver extends BComponent {
             if (ps.length != 0) {
                 BIotProxyBase p = ps[0];
                 ProxyMap.put(p.getIdentifier(), p);
-
-                getData(p);
-
             }
         }
     }
 
 
-    private  void  getData(BIotProxyBase p){
-
-//        if (TmpConstant.TYPE_VALUE_INTEGER.equals(p.getProperty("shadow").getType().getTypeName())) {
-//            int parseData = getInt(p.getProperty("shadow"));
-//            if (parseData != 0) {
-//                updateCache(p.getIdentifier(),new ValueWrapper.IntValueWrapper(parseData) );
-//            } else {
-//                log.info("数据格式不对");
-//            }
-//            return;
-//        }
-//        if (p.getProperty("shadow").getType().getTypeName().equals("StatusNumeric")) {
-//            int parseData = (int)p.getValue();
-//            if (parseData != 0) {
-//                updateCache(p.getIdentifier(),new ValueWrapper.IntValueWrapper(parseData) );
-//            } else {
-//                log.info("数据格式不对");
-//            }
-//            return;
-//        }
-
-
-
-//        if (TmpConstant.TYPE_VALUE_FLOAT.equals(p.getProperty("shadow").getType().getTypeName())) {
-//            Double parseData = (Double) p.getValue();
-//            if (parseData != null) {
-//                updateCache(p.getIdentifier(), new ValueWrapper.DoubleValueWrapper(parseData));
-//            }  else {
-//            log.info("数据格式不对");
-//            }
-//            return;
-//        }
-
-//        if (TmpConstant.TYPE_VALUE_DOUBLE.equals(p.getProperty("shadow").getType().getTypeName())) {
-//            Double parseData = getDouble(p.getProperty("shadow"));
-//            if (parseData != null) {
-//                updateCache(p.getIdentifier(),new ValueWrapper.DoubleValueWrapper(parseData));
-//            } else {
-//                log.info("数据格式不对");
-//            }
-//            return;
-//        }
-        if (p.getProperty("shadow").getType().getTypeName().equals("StatusNumeric")) {
-            Double parseData = (Double) p.getValue();
-            if (parseData != null) {
-                updateCache(p.getIdentifier(),new ValueWrapper.DoubleValueWrapper(parseData));
-            } else {
-                log.info("数据格式不对");
-            }
-            return;
-        }
-
-
-//        if (TmpConstantEmalytics.TYPE_VALUE_BStatusBoolean.equals(p.getProperty("shadow").getType().getTypeName())) {
-//            int parseData = getInt(p.getProperty("shadow"));
-//            if (parseData == 0 || parseData == 1) {
-//                updateCache(p.getIdentifier(), new ValueWrapper.BooleanValueWrapper(parseData));
-//            } else {
-//                log.info("数据格式不对");
-//            }
-//            return;
-//        }
-        if (p.getProperty("shadow").getType().getTypeName().equals("StatusBoolean")) {
-            int parseData = (boolean)p.getValue()?1:0;
-            if (parseData == 0 || parseData == 1) {
-                updateCache(p.getIdentifier(), new ValueWrapper.BooleanValueWrapper(parseData));
-            } else {
-                log.info("数据格式不对");
-            }
-            return;
-        }
-    }
 
     private void updateCache(String identifier, ValueWrapper valueWrapper ) {
 

@@ -10,6 +10,9 @@
 
 package com.phoenixcontact.AliyunIotMqtt.proxy;
 
+import com.aliyun.alink.linksdk.tmp.device.payload.ValueWrapper;
+import com.phoenixcontact.AliyunIotMqtt.Devices.ReportData;
+
 import javax.baja.nre.annotations.NiagaraProperty;
 import javax.baja.nre.annotations.NiagaraType;
 import javax.baja.status.BStatusNumeric;
@@ -98,6 +101,13 @@ public class BIotNumericWriteableProxy extends BIotProxyBase {
     @Override
     public Object getValue() {
         return ((BStatusNumeric) this.getParent().get("out")).getValue();
+    }
+
+    @Override
+    public void UpdataReportData() {
+
+        ReportData.getInstance().ReportDataWrapperMap.computeIfAbsent(getIdentifier(),i->new ValueWrapper.DoubleValueWrapper((Double)getValue())).setValue((Double)getValue());
+
     }
 
 

@@ -5,9 +5,11 @@ import com.aliyun.alink.linkkit.api.LinkKit;
 import com.aliyun.alink.linksdk.tmp.device.payload.ValueWrapper;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class  ReportData {
-    public  HashMap<String, ValueWrapper> ReportDataWrapperMap = new HashMap<String, ValueWrapper>();
+    public Map<String, ValueWrapper> ReportDataWrapperMap = new ConcurrentHashMap<String, ValueWrapper>();
 
 
     public static ReportData getInstance() {
