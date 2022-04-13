@@ -390,31 +390,6 @@ public class BAliyunDevices extends BComponent {
      * @param deviceInfoData
      */
     public void executeScheduler(DeviceInfoData deviceInfoData) {
-//        thingTestManager.readData(System.getProperty("user.dir") + "/test_case.json");
-
-//        thingTestManager.setServiceHandler();
-//        testMqtt();
-//        testLabel();
-//        testCota();
-
-        // 测试网关子设备管理功能，高级版功能
-//        testGateway(deviceInfoData);
-
-        // 测试获取设备影子，基础版功能，注意不能与高级版共用
-//        testDeviceShadow();
-//        // test deinit
-//        if (!testDeinit) {
-//            testDeinit = true;
-//            try {
-//                Thread.sleep(5*1000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//           deinit();
-//            HelloWorld helloWorld = new HelloWorld();
-//            helloWorld.init(deviceInfoData);
-//        }
-
 //         定时上报
         ThreadPool.scheduleAtFixedRate(new Runnable() {
             public void run() {
@@ -422,84 +397,6 @@ public class BAliyunDevices extends BComponent {
             }
         }, 3, 5, TimeUnit.SECONDS);
     }
-
-//    private void testDeviceShadow() {
-//        DeviceShadowSample sample = new DeviceShadowSample();
-//        try {
-//            sample.listenDownStream();
-//            sample.shadowGet();
-//            try {
-//                Thread.sleep(5*1000);
-//            } catch (Exception e){
-//
-//            }
-//            testMqtt();
-//            // 异步操作，注意别和删除操作一起执行，不能保持时序
-//            sample.shadowUpdate();
-//
-//            // 异步操作，注意别和更新一起执行
-////            sample.shadowDelete();
-//            // 异步操作，
-////            sample.shadowDeleteAll();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-////        sample.shadowDelete();
-//    }
-
-    /**
-     * 动态注册示例代码
-     * 1.现在云端创建产品和设备；
-     * 2.在云端开启动态注册；
-     * 3.填入pk、dn、ps；
-     * 4.调用该方法；
-     * 5.拿到deviceSecret返回之后 调初始化建联；
-     */
-//    public void deviceRegister(DeviceInfo deviceInfo) {
-//        LinkKitInitParams params = new LinkKitInitParams();
-//        IoTMqttClientConfig config = new IoTMqttClientConfig();
-//        config.productKey = deviceInfo.productKey;
-//        config.deviceName = deviceInfo.deviceName;
-//
-//        params.mqttClientConfig = config;
-//        params.connectConfig = new IoTApiClientConfig();
-//
-//        params.deviceInfo = deviceInfo;
-//
-//        final CommonRequest request = new CommonRequest();
-//        request.setPath("/auth/register/device");
-//        LinkKit.getInstance().deviceRegister(params, request, new IoTCallback() {
-//            public void onFailure(CommonRequest commonRequest, Exception e) {
-//                log.warning("动态注册失败 " + e);
-//            }
-//
-//            public void onResponse(CommonRequest commonRequest, CommonResponse commonResponse) {
-//                if (commonResponse == null || StringUtils.isEmptyString(commonResponse.getData())) {
-//                   log.warning("动态注册失败 response=null");
-//                    return;
-//                }
-//                try {
-//                    ResponseModel<Map<String, String>> response = new Gson().fromJson(commonResponse.getData(), new TypeToken<ResponseModel<Map<String, String>>>() {
-//                    }.getType());
-//
-//
-//                    if (response != null && "200".equals(response.code)) {
-//                        log.warning("register success " + (commonResponse == null ? "" : commonResponse.getData()));
-//                        /**  获取 deviceSecret, 存储到本地，然后执行初始化建联
-//                         * 这个流程只能走一次，获取到 secret 之后，下次启动需要读取本地存储的三元组，
-//                         * 直接执行初始化建联，不可以再走动态初始化
-//                         */
-//                        // deviceSecret = response.data.get("deviceSecret");
-//                        // init(pk,dn,ds);
-//                        return;
-//                    }
-//                } catch (Exception e) {
-//
-//                }
-//                log.warning("register fail " + commonResponse.getData());
-//            }
-//        });
-//    }
 
     private void deinit(){
         LinkKit.getInstance().deinit();
@@ -518,28 +415,6 @@ public class BAliyunDevices extends BComponent {
         sample.subscribe();
         sample.unSubscribe();
         sample.registerResource();
-    }
-
-    /**
-     * 测试 COTA 远程配置
-     */
-    private void testCota() {
-        COTASample sample = new COTASample(getProductKey(), getDeviceName());
-        // 监听云端 COTA 下行数据更新
-        sample.setCOTAChangeListener();
-        // 获取 COTA 更新
-        sample.cOTAGet();
-    }
-
-    /**
-     * 标签测试
-     */
-    private void testLabel() {
-        LabelSample sample = new LabelSample(getProductKey(), getDeviceName());
-        // 测试标签更新
-        sample.labelUpdate();
-        // 测试标签删除
-//        sample.labelDelete();
     }
 
     public void doCheckConnect(){
