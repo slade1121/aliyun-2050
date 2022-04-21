@@ -3,6 +3,7 @@
 <types>
   <!-- Type Example:<type name="MyClass" class="com.acme.BMyClass"/> -->
   <!--com.phoenixcontact.AliyunIotMqtt-->
+  <!--com.phoenixcontact.AliyunIotMqtt.Devices-->
   <type class="com.phoenixcontact.AliyunIotMqtt.Devices.BAliyunDevices" name="AliyunDevices"/>
   <type class="com.phoenixcontact.AliyunIotMqtt.BTest" name="Test"/>
   <type class="com.phoenixcontact.AliyunIotMqtt.BSignMethodEnum" name="SignMethodEnum"/>
@@ -13,4 +14,5 @@
   <type class="com.phoenixcontact.AliyunIotMqtt.proxy.BIotBooleanPointProxy" name="IotBooleanPointProxy"/>
   <type class="com.phoenixcontact.AliyunIotMqtt.proxy.BIotBooleanWriteableProxy" name="IotBooleanWriteableProxy"/>
   <type class="com.phoenixcontact.AliyunIotMqtt.proxy.BIotNumericPointProxy" name="IotNumericPointProxy"/>
+  <type class="com.phoenixcontact.AliyunIotMqtt.proxy.BIotDateWriteableProxy" name="IotDateWriteableProxy"/>
 </types>

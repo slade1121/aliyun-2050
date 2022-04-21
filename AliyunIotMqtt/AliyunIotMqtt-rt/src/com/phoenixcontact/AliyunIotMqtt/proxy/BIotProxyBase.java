@@ -165,8 +165,7 @@ public abstract class BIotProxyBase extends BComponent {
     private Logger log = Logger.getLogger(getClass().getSimpleName());
 
     public abstract Object getValue();
-
-    public abstract void UpdataReportData() ;
+    public abstract ValueWrapper<?> getValueWrapper();
 
     public BIotProxyBase() {
     }
@@ -179,6 +178,7 @@ public abstract class BIotProxyBase extends BComponent {
         if (config.getDataType().equals("int")||config.getDataType().equals("double")) {
             BNumericWritable point = new BNumericWritable();
             BIotNumericWriteableProxy proxy = new BIotNumericWriteableProxy();
+            proxy.setAsInt(config.getDataType().equals("int"));
             proxy.applyParameters(config);
             point.add("iotProxy", proxy);
             return point;
@@ -190,7 +190,15 @@ public abstract class BIotProxyBase extends BComponent {
             point.add("iotProxy", proxy);
             return point;
         }
+        if (config.getDataType().equals("date")) {
+            BStringWritable point = new BStringWritable();
+            BIotDateWriteableProxy proxy = new BIotDateWriteableProxy();
+            proxy.applyParameters(config);
+            point.add("iotProxy", proxy);
+            return point;
+        }
         return null;
     }
+
 
 }

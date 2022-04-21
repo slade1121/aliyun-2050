@@ -94,7 +94,6 @@ public class BIotBooleanWriteableProxy extends BIotProxyBase {
         super.changed(property, context);
         if (property == shadow && this.getNotifyWhenChanged()) {
             doIotNotify();
-            UpdataReportData();
         }
     }
 
@@ -105,12 +104,9 @@ public class BIotBooleanWriteableProxy extends BIotProxyBase {
     }
 
     @Override
-    public void UpdataReportData() {
-
-        ReportData.getInstance().ReportDataWrapperMap.computeIfAbsent(getIdentifier(),i->new ValueWrapper.BooleanValueWrapper((boolean)getValue()?1:0)).setValue((boolean)getValue()?1:0);
-
+    public ValueWrapper<?> getValueWrapper() {
+        return new ValueWrapper.BooleanValueWrapper((boolean) getValue() ? 1 : 0);
     }
-
 
 
     private Logger log = Logger.getLogger(getClass().getSimpleName());

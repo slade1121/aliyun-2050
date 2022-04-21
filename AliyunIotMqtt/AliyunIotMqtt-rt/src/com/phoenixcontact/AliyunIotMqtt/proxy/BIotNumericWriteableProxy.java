@@ -12,6 +12,7 @@ package com.phoenixcontact.AliyunIotMqtt.proxy;
 
 import com.aliyun.alink.linksdk.tmp.device.payload.ValueWrapper;
 import com.phoenixcontact.AliyunIotMqtt.Devices.ReportData;
+import com.phoenixcontact.AliyunIotMqtt.support.IotProperty;
 
 import javax.baja.nre.annotations.NiagaraProperty;
 import javax.baja.nre.annotations.NiagaraType;
@@ -29,55 +30,70 @@ import java.util.logging.Logger;
 
 @NiagaraType
 @NiagaraProperty(name = "shadow", type = "BStatusNumeric", defaultValue = "new BStatusNumeric()", flags = Flags.HIDDEN)
+@NiagaraProperty(name = "AsInt", type = "boolean", defaultValue = "false",flags = Flags.READONLY)
 public class BIotNumericWriteableProxy extends BIotProxyBase {
 
 
-    /*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
-    /*@ $com.phoenixcontact.AliyunIotMqtt.proxy.BIotNumericWriteableProxy(1004284057)1.0$ @*/
-    /* Generated Wed Apr 06 20:05:06 CST 2022 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+    
+/*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
+/*@ $com.phoenixcontact.AliyunIotMqtt.proxy.BIotNumericWriteableProxy(1406265527)1.0$ @*/
+/* Generated Mon Apr 18 14:38:02 CST 2022 by Slot-o-Matic (c) Tridium, Inc. 2012 */
 
 ////////////////////////////////////////////////////////////////
 // Property "shadow"
 ////////////////////////////////////////////////////////////////
+  
+  /**
+   * Slot for the {@code shadow} property.
+   * @see #getShadow
+   * @see #setShadow
+   */
+  public static final Property shadow = newProperty(Flags.HIDDEN, new BStatusNumeric(), null);
+  
+  /**
+   * Get the {@code shadow} property.
+   * @see #shadow
+   */
+  public BStatusNumeric getShadow() { return (BStatusNumeric)get(shadow); }
+  
+  /**
+   * Set the {@code shadow} property.
+   * @see #shadow
+   */
+  public void setShadow(BStatusNumeric v) { set(shadow, v, null); }
 
-    /**
-     * Slot for the {@code shadow} property.
-     *
-     * @see #getShadow
-     * @see #setShadow
-     */
-    public static final Property shadow = newProperty(Flags.HIDDEN, new BStatusNumeric(), null);
-
-    /**
-     * Get the {@code shadow} property.
-     *
-     * @see #shadow
-     */
-    public BStatusNumeric getShadow() {
-        return (BStatusNumeric) get(shadow);
-    }
-
-    /**
-     * Set the {@code shadow} property.
-     *
-     * @see #shadow
-     */
-    public void setShadow(BStatusNumeric v) {
-        set(shadow, v, null);
-    }
+////////////////////////////////////////////////////////////////
+// Property "AsInt"
+////////////////////////////////////////////////////////////////
+  
+  /**
+   * Slot for the {@code AsInt} property.
+   * @see #getAsInt
+   * @see #setAsInt
+   */
+  public static final Property AsInt = newProperty(Flags.READONLY, false, null);
+  
+  /**
+   * Get the {@code AsInt} property.
+   * @see #AsInt
+   */
+  public boolean getAsInt() { return getBoolean(AsInt); }
+  
+  /**
+   * Set the {@code AsInt} property.
+   * @see #AsInt
+   */
+  public void setAsInt(boolean v) { setBoolean(AsInt, v, null); }
 
 ////////////////////////////////////////////////////////////////
 // Type
 ////////////////////////////////////////////////////////////////
+  
+  @Override
+  public Type getType() { return TYPE; }
+  public static final Type TYPE = Sys.loadType(BIotNumericWriteableProxy.class);
 
-    @Override
-    public Type getType() {
-        return TYPE;
-    }
-
-    public static final Type TYPE = Sys.loadType(BIotNumericWriteableProxy.class);
-
-    /*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
+/*+ ------------ END BAJA AUTO GENERATED CODE -------------- +*/
 
     @Override
     public void started() throws Exception {
@@ -93,7 +109,6 @@ public class BIotNumericWriteableProxy extends BIotProxyBase {
         super.changed(property, context);
         if (property == shadow && this.getNotifyWhenChanged()) {
             doIotNotify();
-            UpdataReportData();
         }
     }
 
@@ -104,12 +119,13 @@ public class BIotNumericWriteableProxy extends BIotProxyBase {
     }
 
     @Override
-    public void UpdataReportData() {
-
-        ReportData.getInstance().ReportDataWrapperMap.computeIfAbsent(getIdentifier(),i->new ValueWrapper.DoubleValueWrapper((Double)getValue())).setValue((Double)getValue());
-
+    public ValueWrapper<?> getValueWrapper() {
+        if(this.getAsInt()){
+            return new ValueWrapper.IntValueWrapper(((Double) getValue()).intValue());
+        }else{
+            return new ValueWrapper.DoubleValueWrapper(((Double) getValue()));
+        }
     }
-
 
     private Logger log = Logger.getLogger(getClass().getSimpleName());
 

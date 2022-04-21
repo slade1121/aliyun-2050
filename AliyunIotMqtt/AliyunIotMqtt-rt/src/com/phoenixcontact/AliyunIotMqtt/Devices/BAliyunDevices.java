@@ -30,6 +30,7 @@ import com.google.gson.reflect.TypeToken;
 //import com.alibaba.fastjson.JSONObject;
 
 
+import com.phoenixcontact.AliyunIotMqtt.proxy.BIotDateWriteableProxy;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
@@ -42,6 +43,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -58,10 +60,10 @@ import java.util.logging.Logger;
 
 @NiagaraType
 
-@NiagaraProperty(name = "productKey", type = "BString", defaultValue = "gyg8zcMAPUO", flags = Flags.SUMMARY)
-@NiagaraProperty(name = "productSecret", type = "BString", defaultValue = "dzri4D4eWYQJMnJu", flags = Flags.SUMMARY)
-@NiagaraProperty(name = "deviceName", type = "BString", defaultValue = "PXC-I2050-A874-1D9E-2D9A", flags = Flags.SUMMARY)
-@NiagaraProperty(name = "deviceSecret", type = "BString", defaultValue = "aa96564b4677d8863e3ae061e23e9503", flags = Flags.SUMMARY)
+@NiagaraProperty(name = "productKey", type = "BString", defaultValue = "gthyoZkqWkM", flags = Flags.SUMMARY)
+@NiagaraProperty(name = "productSecret", type = "BString", defaultValue = "HGqn7YFQYpSolh5D", flags = Flags.SUMMARY)
+@NiagaraProperty(name = "deviceName", type = "BString", defaultValue = "Device2", flags = Flags.SUMMARY)
+@NiagaraProperty(name = "deviceSecret", type = "BString", defaultValue = "cf35f966cd037305b744af3550986fcb", flags = Flags.SUMMARY)
 @NiagaraProperty(name = "regionId", type = "BString", defaultValue = "cn-shanghai", flags = Flags.SUMMARY)
 @NiagaraProperty(name = "port", type = "int", defaultValue = "1883", flags = Flags.SUMMARY)
 @NiagaraProperty(name = "ConnectStatus", type = "BStatusBoolean", defaultValue = "new BStatusBoolean(false)", flags = Flags.READONLY)
@@ -75,8 +77,8 @@ public class BAliyunDevices extends BComponent {
 
     
 /*+ ------------ BEGIN BAJA AUTO GENERATED CODE ------------ +*/
-/*@ $com.phoenixcontact.AliyunIotMqtt.Devices.BAliyunDevices(695544686)1.0$ @*/
-/* Generated Tue Apr 12 15:59:20 CST 2022 by Slot-o-Matic (c) Tridium, Inc. 2012 */
+/*@ $com.phoenixcontact.AliyunIotMqtt.Devices.BAliyunDevices(3402996848)1.0$ @*/
+/* Generated Thu Apr 14 16:56:24 CST 2022 by Slot-o-Matic (c) Tridium, Inc. 2012 */
 
 ////////////////////////////////////////////////////////////////
 // Property "productKey"
@@ -87,7 +89,7 @@ public class BAliyunDevices extends BComponent {
    * @see #getProductKey
    * @see #setProductKey
    */
-  public static final Property productKey = newProperty(Flags.SUMMARY, "gyg8zcMAPUO", null);
+  public static final Property productKey = newProperty(Flags.SUMMARY, "gthyoZkqWkM", null);
   
   /**
    * Get the {@code productKey} property.
@@ -110,7 +112,7 @@ public class BAliyunDevices extends BComponent {
    * @see #getProductSecret
    * @see #setProductSecret
    */
-  public static final Property productSecret = newProperty(Flags.SUMMARY, "dzri4D4eWYQJMnJu", null);
+  public static final Property productSecret = newProperty(Flags.SUMMARY, "HGqn7YFQYpSolh5D", null);
   
   /**
    * Get the {@code productSecret} property.
@@ -133,7 +135,7 @@ public class BAliyunDevices extends BComponent {
    * @see #getDeviceName
    * @see #setDeviceName
    */
-  public static final Property deviceName = newProperty(Flags.SUMMARY, "PXC-I2050-A874-1D9E-2D9A", null);
+  public static final Property deviceName = newProperty(Flags.SUMMARY, "Device2", null);
   
   /**
    * Get the {@code deviceName} property.
@@ -156,7 +158,7 @@ public class BAliyunDevices extends BComponent {
    * @see #getDeviceSecret
    * @see #setDeviceSecret
    */
-  public static final Property deviceSecret = newProperty(Flags.SUMMARY, "aa96564b4677d8863e3ae061e23e9503", null);
+  public static final Property deviceSecret = newProperty(Flags.SUMMARY, "cf35f966cd037305b744af3550986fcb", null);
   
   /**
    * Get the {@code deviceSecret} property.

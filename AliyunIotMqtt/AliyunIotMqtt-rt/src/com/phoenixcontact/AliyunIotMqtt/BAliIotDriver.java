@@ -15,6 +15,7 @@ import com.aliyun.alink.linksdk.tmp.utils.TmpConstant;
 import com.aliyun.alink.linksdk.tools.ALog;
 import com.phoenixcontact.AliyunIotMqtt.Devices.ReportData;
 import com.phoenixcontact.AliyunIotMqtt.Devices.TmpConstantEmalytics;
+import com.phoenixcontact.AliyunIotMqtt.proxy.BIotBooleanWriteableProxy;
 import com.phoenixcontact.AliyunIotMqtt.proxy.BIotNumericWriteableProxy;
 import com.phoenixcontact.AliyunIotMqtt.proxy.BIotProxyBase;
 import com.phoenixcontact.AliyunIotMqtt.support.IotProperty;
@@ -144,6 +145,7 @@ public class BAliIotDriver extends BComponent {
 //    }
 
     private ReportData reportData = new ReportData();
+
     private void buildPointsRef() {
         ReportData.getInstance().ReportDataWrapperMap.clear();
         ProxyMap.clear();
@@ -158,13 +160,17 @@ public class BAliIotDriver extends BComponent {
     }
 
 
+    private void updateCache(String identifier, ValueWrapper valueWrapper) {
 
-    private void updateCache(String identifier, ValueWrapper valueWrapper ) {
-
-         ReportData.getInstance().ReportDataWrapperMap.put(identifier,valueWrapper);
+        ReportData.getInstance().ReportDataWrapperMap.put(identifier, valueWrapper);
     }
 
     public void onPointNotify(BIotProxyBase point) {
+
+        String id = point.getIdentifier();
+        ValueWrapper<?> vw = point.getValueWrapper();
+        ReportData.getInstance().ReportDataWrapperMap.computeIfAbsent(id, i -> vw).setValue(vw.getValue());
+
         System.out.println(point.getValue());
     }
 

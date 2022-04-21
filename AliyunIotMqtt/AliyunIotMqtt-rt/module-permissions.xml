@@ -80,7 +80,13 @@
     </req-permission>
 
 
-
+<!--    <java-permissions type="station">-->
+<!--      <java-permission action="read, write" class="java.util.PropertyPermission" name="*"/>-->
+<!--      <java-permission class="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>-->
+<!--      <java-permission class="java.net.NetPermission" name="getNetworkInformation"/>-->
+<!--      <java-permission action="accept,connect,listen,resolve" class="com.tridium.nre.security.NiagaraSocketPermission" name="*:1-100000"/>-->
+<!--      <java-permission class="java.lang.RuntimePermission" name="modifyThread"/>-->
+<!--    </java-permissions>-->
 
 
 
@@ -88,13 +94,7 @@
 
 
 
-  <!--  <java-permissions type="station">-->
-  <!--&lt;!&ndash;    <java-permission action="read, write" class="java.util.PropertyPermission" name="*"/>&ndash;&gt;-->
-  <!--&lt;!&ndash;    <java-permission class="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>&ndash;&gt;-->
-  <!--&lt;!&ndash;    <java-permission class="java.net.NetPermission" name="getNetworkInformation"/>&ndash;&gt;-->
-  <!--&lt;!&ndash;    <java-permission action="accept,connect,listen,resolve" class="com.tridium.nre.security.NiagaraSocketPermission" name="*:1-100000"/>&ndash;&gt;-->
-  <!--&lt;!&ndash;    <java-permission class="java.lang.RuntimePermission" name="modifyThread"/>&ndash;&gt;-->
-  <!--  </java-permissions>-->
+
 
 
 
